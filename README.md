@@ -33,9 +33,9 @@ Each agent is configured with:
 - Risk-Averse
 
 ## Basic Workflow
-
+```text
 Scenario Selection
-        ↓
+        
 Predefined / Custom Scenario
         ↓
 Agent Configuration
@@ -45,7 +45,7 @@ Personality Selection
 Negotiation
         ↓
 Outcome Report
-
+```text
 **## Current Progress**
 
 **Technology Stack**
