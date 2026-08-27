@@ -62,24 +62,32 @@ Repository: GitHub
 
 Currently working on:
 
-Scenario Selection
-Predefined Scenario Data
-Agent Configuration
-Personality Selection
-Basic Application Workflow
-System Architecture
++ Scenario Selection
++ Predefined Scenario Data
++ Agent Configuration
++ Personality Selection
++ Basic Application Workflow
++ System Architecture
 
 LLM-powered negotiation and advanced negotiation logic will be implemented in later milestones.
 
 Getting Started
 **1. Clone the Repository**
+```text
 git clone <repository-url>
+```
 **2. Navigate to the Project**
+```text
 cd ai-multi-agent-negotiation-platform
+```
 **3. Install Dependencies**
+```text
 npm install
+```
 **4. Start the Development Server**
+```text
 npm run dev
+```
 
 The application will be available at the local URL provided by Vite.
 
