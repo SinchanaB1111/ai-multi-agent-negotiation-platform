@@ -34,7 +34,6 @@ Each agent is configured with:
 
 ## Basic Workflow
 
-```text
 Scenario Selection
         ↓
 Predefined / Custom Scenario
