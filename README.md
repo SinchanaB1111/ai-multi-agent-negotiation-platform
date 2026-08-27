@@ -45,7 +45,7 @@ Personality Selection
 Negotiation
         ↓
 Outcome Report
-```text
+```
 **## Current Progress**
 
 **Technology Stack**
