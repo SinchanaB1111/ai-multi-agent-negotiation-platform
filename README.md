@@ -1,39 +1,96 @@
-# React + Vite
+# AI-Driven Multi-Agent Negotiation Training & Simulation Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Overview
 
-Currently, two official plugins are available:
+An AI-driven platform designed to simulate and practice real-world negotiations using multiple agents with different roles, goals, constraints, and personalities.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The platform will support both **AI-vs-AI Simulation Mode** and **Human-vs-AI Practice Mode**.
 
-## React Compiler
+## Negotiation Scenarios
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The platform includes three predefined scenarios:
 
-## Expanding the ESLint configuration
+- Vendor Pricing Negotiation
+- Job Offer Negotiation
+- Project Budget Allocation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+It also supports the concept of **custom scenarios**, where users can define their own agents and negotiation objectives.
 
-# ai-multi-agent-negotiation-platform
-AI-driven Multi-Agent Negotiation Training and Simulation Platform
+## Agent Configuration
 
-# Getting Started
+Each agent is configured with:
 
-Install the required dependencies:
+- Agent Name
+- Role
+- Goal
+- Constraints
+- Personality
 
+### Personalities
+
+- Aggressive
+- Collaborative
+- Risk-Averse
+
+## Basic Workflow
+
+```text
+Scenario Selection
+        ↓
+Predefined / Custom Scenario
+        ↓
+Agent Configuration
+        ↓
+Personality Selection
+        ↓
+Negotiation
+        ↓
+Outcome Report
+
+**## Current Progress**
+
+**Technology Stack**
+Frontend: React
+Build Tool: Vite
+Programming Language: JavaScript
+Styling: CSS
+Runtime: Node.js
+Package Manager: npm
+Version Control: Git
+Repository: GitHub
+
+**Milestone 1 – Basic Implementation**
+
+Currently working on:
+
+Scenario Selection
+Predefined Scenario Data
+Agent Configuration
+Personality Selection
+Basic Application Workflow
+System Architecture
+
+LLM-powered negotiation and advanced negotiation logic will be implemented in later milestones.
+
+Getting Started
+**1. Clone the Repository**
+git clone <repository-url>
+**2. Navigate to the Project**
+cd ai-multi-agent-negotiation-platform
+**3. Install Dependencies**
 npm install
-
-Run the development server:
-
+**4. Start the Development Server**
 npm run dev
 
 The application will be available at the local URL provided by Vite.
 
-# Team
+👥 Team
 
-This project is developed by a 3-member team.
+This project is developed collaboratively.
 
-sinchana
-Vinod 
+Team Members
+Sinchana B
+Vinod
 Yashwanth
+
+Each team member contributes through the common GitHub repository, with contributions tracked through Git commits and branches.
