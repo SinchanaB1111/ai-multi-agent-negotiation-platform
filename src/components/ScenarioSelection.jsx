@@ -1,60 +1,111 @@
-import ScenarioCard from "./ScenarioCard";
-
 function ScenarioSelection({ scenarios, onSelect }) {
   return (
     <section className="page scenario-selection-page">
-      <div className="scenario-hero">
-        <div className="hero-badge">
-          <span className="badge-dot"></span>
-          Negotiation Setup
+
+      {/* HEADER */}
+
+      <div className="ready-hero">
+        <div className="ready-badge">
+          <span className="ready-badge-dot"></span>
+          SCENARIO SETUP
         </div>
 
-        <h1>
-          Choose your <span>negotiation scenario</span>
-        </h1>
+        <h1>Select Negotiation Scenario</h1>
 
         <p>
-          Select a real-world negotiation situation. You will then configure
-          the participating agents, their personalities, goals, and constraints.
+          Choose a negotiation scenario to begin the setup process.
         </p>
       </div>
 
+
+      {/* SCENARIO HEADER */}
+
       <div className="scenario-section-header">
-        <div className="scenario-header-center">
-          <div className="scenario-title-row">
-            <h2>Available Scenarios</h2>
-            <div className="scenario-count">
-              <span>{scenarios.length}</span>
-              Scenarios
+        <div>
+          <span className="ready-scenario-label">
+            AVAILABLE SCENARIOS
+          </span>
+
+          <h2>Choose a scenario</h2>
+        </div>
+
+        <span className="scenario-count">
+          {scenarios.length} Available
+        </span>
+      </div>
+
+
+      {/* SCENARIOS */}
+
+      <div className="scenario-grid">
+
+        {scenarios.map((scenario) => (
+          <article
+            className="scenario-card"
+            key={scenario.id}
+          >
+
+            <div className="scenario-card-top">
+
+              <div className="scenario-number">
+                {String(scenario.id).padStart(2, "0")}
+              </div>
+
+              <span className="scenario-type">
+                NEGOTIATION
+              </span>
+
             </div>
-          </div>
-          <p>Choose one scenario to begin the simulation setup.</p>
-        </div>
-      </div>
 
-      <div className="scenario-row">
-        {scenarios.map((scenario, index) => (
-          <div className="scenario-wrapper" key={scenario.id}>
-            <ScenarioCard
-              scenario={scenario}
-              index={index}
-              onSelect={onSelect}
-            />
-          </div>
+
+            <h2>{scenario.name}</h2>
+
+            <p>{scenario.description}</p>
+
+
+            {/* AGENTS PREVIEW */}
+
+            <div className="scenario-agents-preview">
+
+              {scenario.agents.map((agent) => (
+
+                <div
+                  className="scenario-agent-preview"
+                  key={agent.id}
+                >
+
+                  <div className="scenario-agent-avatar">
+                    {agent.role
+                      ? agent.role.charAt(0).toUpperCase()
+                      : "A"}
+                  </div>
+
+                  <div>
+                    <strong>{agent.name}</strong>
+                    <span>{agent.role}</span>
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+
+            <button
+              type="button"
+              className="scenario-select-button"
+              onClick={() => onSelect(scenario)}
+            >
+              <span>Select Scenario</span>
+              <span>→</span>
+            </button>
+
+          </article>
         ))}
+
       </div>
 
-      <div className="scenario-help">
-        <div className="help-icon">i</div>
-
-        <div className="help-content">
-          <strong>How it works</strong>
-          <p>
-            Select a scenario → Configure both agents → Choose personalities →
-            Review goals and constraints → Get ready for negotiation.
-          </p>
-        </div>
-      </div>
     </section>
   );
 }

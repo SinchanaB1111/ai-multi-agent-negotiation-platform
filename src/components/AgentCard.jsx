@@ -71,7 +71,13 @@ function AgentCard({ agent, onPersonalityChange }) {
 
           <div className="detail-text">
             <strong className="detail-label">Constraint:</strong>
-            <p className="detail-value">{agent.constraints}</p>
+            <p className="detail-value">
+  {typeof agent.constraints === "object"
+    ? Object.entries(agent.constraints)
+        .map(([key, value]) => `${key}: ₹${value}`)
+        .join(", ")
+    : agent.constraints}
+</p>
           </div>
         </div>
       </div>

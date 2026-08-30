@@ -1,8 +1,31 @@
 import React from "react";
 
-function ReadyScreen({ scenario, agents, onRestart }) {
+function ReadyScreen({
+  scenario,
+  agents,
+  negotiationState,
+  onRestart,
+  onStartNegotiation,
+}) {
   const agent1 = agents[0];
   const agent2 = agents[1];
+
+  const formatConstraint = (constraints) => {
+    if (!constraints) return "Not specified";
+
+    if (typeof constraints === "object") {
+      return Object.entries(constraints)
+        .map(([key, value]) => {
+          if (typeof value === "number") {
+            return `${key}: ₹${value.toLocaleString()}`;
+          }
+          return `${key}: ${value}`;
+        })
+        .join(", ");
+    }
+
+    return constraints;
+  };
 
   return (
     <section className="page ready-screen">
@@ -19,22 +42,72 @@ function ReadyScreen({ scenario, agents, onRestart }) {
         </p>
       </div>
 
-      <div className="ready-scenario-bar">
-        <div className="ready-scenario-label">
-          SELECTED NEGOTIATION SCENARIO
+      {negotiationState && (
+        <div className="negotiation-state-panel">
+          <div className="ready-scenario-label">
+            NEGOTIATION STATE
+          </div>
+
+          <div className="state-grid">
+            <div>
+              <span>STATUS</span>
+              <strong>{negotiationState.status}</strong>
+            </div>
+
+            <div>
+              <span>ROUND</span>
+              <strong>{negotiationState.currentRound}</strong>
+            </div>
+
+            <div>
+              <span>CURRENT TURN</span>
+              <strong>
+                {negotiationState.currentAgentTurn}
+              </strong>
+            </div>
+
+            <div>
+              <span>PREVIOUS OFFER</span>
+              <strong>
+                {negotiationState.previousOffer
+                  ? `₹${Number(
+                      negotiationState.previousOffer.value
+                    ).toLocaleString()}`
+                  : "None"}
+              </strong>
+            </div>
+
+            <div>
+              <span>CURRENT OFFER</span>
+              <strong>
+                {negotiationState.currentOffer
+                  ? `₹${Number(
+                      negotiationState.currentOffer.value
+                    ).toLocaleString()}`
+                  : "None"}
+              </strong>
+            </div>
+
+            <div>
+              <span>HISTORY</span>
+              <strong>
+                {negotiationState.negotiationHistory?.length || 0} Offers
+              </strong>
+            </div>
+          </div>
         </div>
-
-        <h2>{scenario.name}</h2>
-
-        <p>{scenario.description}</p>
-      </div>
+      )}
 
       <div className="negotiation-arena">
-        {/* Agent 1 */}
+
+        {/* ================= AGENT 1 ================= */}
+
         {agent1 && (
           <article className="negotiation-agent-card">
             <div className="negotiation-card-header">
-              <div className="ready-agent-number">AGENT 01</div>
+              <div className="ready-agent-number">
+                AGENT 01
+              </div>
 
               <div className="ready-status">
                 <span className="ready-status-dot"></span>
@@ -44,7 +117,7 @@ function ReadyScreen({ scenario, agents, onRestart }) {
 
             <div className="ready-agent-title">
               <div className="ready-agent-avatar">
-                {agent1.role.charAt(0)}
+                {agent1.role?.charAt(0)}
               </div>
 
               <div>
@@ -54,6 +127,7 @@ function ReadyScreen({ scenario, agents, onRestart }) {
             </div>
 
             <div className="ready-agent-info">
+
               <div className="ready-info-block">
                 <div className="ready-info-icon">
                   <svg
@@ -73,7 +147,10 @@ function ReadyScreen({ scenario, agents, onRestart }) {
                 </div>
 
                 <div className="ready-info-text">
-                  <strong className="ready-info-label">GOAL:</strong>
+                  <strong className="ready-info-label">
+                    GOAL:
+                  </strong>
+
                   <p>{agent1.goal}</p>
                 </div>
               </div>
@@ -95,27 +172,43 @@ function ReadyScreen({ scenario, agents, onRestart }) {
                 </div>
 
                 <div className="ready-info-text">
-                  <strong className="ready-info-label">CONSTRAINT:</strong>
-                  <p>{agent1.constraints}</p>
+                  <strong className="ready-info-label">
+                    CONSTRAINT:
+                  </strong>
+
+                  <p>
+                    {formatConstraint(agent1.constraints)}
+                  </p>
                 </div>
               </div>
+
             </div>
 
             <div className="ready-personality">
-              <span className="personality-label">PERSONALITY:</span>
+              <span className="personality-label">
+                PERSONALITY:
+              </span>
 
               <div className="personality-display">
                 <span className="personality-display-dot"></span>
-                <strong>{agent1.personality}</strong>
+
+                <strong>
+                  {agent1.personality}
+                </strong>
               </div>
             </div>
           </article>
         )}
 
-        {/* Professional Exchange Bridge Indicator */}
+        {/* ================= EXCHANGE BRIDGE ================= */}
+
         <div className="negotiation-bridge-container">
           <div className="bridge-line"></div>
-          <div className="bridge-icon-box" title="Negotiation Exchange Channel">
+
+          <div
+            className="bridge-icon-box"
+            title="Negotiation Exchange Channel"
+          >
             <svg
               width="10"
               height="10"
@@ -130,14 +223,18 @@ function ReadyScreen({ scenario, agents, onRestart }) {
               <path d="M17 8V20M17 20L21 16M17 20L13 16" />
             </svg>
           </div>
+
           <div className="bridge-line"></div>
         </div>
 
-        {/* Agent 2 */}
+        {/* ================= AGENT 2 ================= */}
+
         {agent2 && (
           <article className="negotiation-agent-card">
             <div className="negotiation-card-header">
-              <div className="ready-agent-number">AGENT 02</div>
+              <div className="ready-agent-number">
+                AGENT 02
+              </div>
 
               <div className="ready-status">
                 <span className="ready-status-dot"></span>
@@ -147,7 +244,7 @@ function ReadyScreen({ scenario, agents, onRestart }) {
 
             <div className="ready-agent-title">
               <div className="ready-agent-avatar">
-                {agent2.role.charAt(0)}
+                {agent2.role?.charAt(0)}
               </div>
 
               <div>
@@ -157,6 +254,7 @@ function ReadyScreen({ scenario, agents, onRestart }) {
             </div>
 
             <div className="ready-agent-info">
+
               <div className="ready-info-block">
                 <div className="ready-info-icon">
                   <svg
@@ -176,7 +274,10 @@ function ReadyScreen({ scenario, agents, onRestart }) {
                 </div>
 
                 <div className="ready-info-text">
-                  <strong className="ready-info-label">GOAL:</strong>
+                  <strong className="ready-info-label">
+                    GOAL:
+                  </strong>
+
                   <p>{agent2.goal}</p>
                 </div>
               </div>
@@ -198,23 +299,36 @@ function ReadyScreen({ scenario, agents, onRestart }) {
                 </div>
 
                 <div className="ready-info-text">
-                  <strong className="ready-info-label">CONSTRAINT:</strong>
-                  <p>{agent2.constraints}</p>
+                  <strong className="ready-info-label">
+                    CONSTRAINT:
+                  </strong>
+
+                  <p>
+                    {formatConstraint(agent2.constraints)}
+                  </p>
                 </div>
               </div>
+
             </div>
 
             <div className="ready-personality">
-              <span className="personality-label">PERSONALITY:</span>
+              <span className="personality-label">
+                PERSONALITY:
+              </span>
 
               <div className="personality-display">
                 <span className="personality-display-dot"></span>
-                <strong>{agent2.personality}</strong>
+
+                <strong>
+                  {agent2.personality}
+                </strong>
               </div>
             </div>
           </article>
         )}
       </div>
+
+      {/* ================= CONFIRMATION ================= */}
 
       <div className="ready-confirmation">
         <div className="confirmation-icon">
@@ -233,36 +347,44 @@ function ReadyScreen({ scenario, agents, onRestart }) {
         </div>
 
         <div>
-          <strong>Negotiation environment is ready</strong>
+          <strong>
+            Negotiation environment is ready
+          </strong>
+
           <p>
-            Scenario, agent roles, goals, constraints, and personalities have
-            been configured successfully.
+            Scenario, agent roles, goals, constraints, and
+            personalities have been configured successfully.
           </p>
         </div>
       </div>
 
+      {/* ================= ACTIONS ================= */}
+
       <div className="ready-actions">
-        <button className="restart-button" onClick={onRestart}>
+
+        <button
+          className="restart-button"
+          onClick={onRestart}
+        >
           ← Configure Another Scenario
         </button>
 
         <button
           className="start-negotiation-button"
-          onClick={() =>
-            alert(
-              "Negotiation engine will be implemented in the next milestone."
-            )
-          }
+          onClick={onStartNegotiation}
         >
           <span>Start Negotiation</span>
           <span>→</span>
         </button>
+
       </div>
 
       <p className="milestone-note">
-        AI/LLM-based offer generation and negotiation logic will be integrated
-        in a future milestone.
+        Rule-based negotiation foundation is ready.
+        LLM-based reasoning will be integrated in the next
+        milestone.
       </p>
+
     </section>
   );
 }
