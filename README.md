@@ -98,6 +98,6 @@ This project is developed collaboratively.
 Team Members
 Sinchana B
 Vinod
-Yashwanth
+Yaswanth samudram
 
 Each team member contributes through the common GitHub repository, with contributions tracked through Git commits and branches.
