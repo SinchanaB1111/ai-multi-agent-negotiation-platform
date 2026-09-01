@@ -288,124 +288,121 @@ function App() {
 
 
         {/* ================= PROGRESS ================= */}
+<div className="workflow-progress">
 
-        <div className="workflow-progress">
+  {/* ================= STEP 1 ================= */}
 
-          {/* STEP 1 */}
+  <div
+    className={`progress-step ${
+      step === "scenario"
+        ? "active"
+        : "completed"
+    }`}
+  >
+    <div className="step-number">
+      1
+    </div>
 
-          <div
-            className={`progress-step ${
-              step === "scenario"
-                ? "active"
-                : "completed"
-            }`}
-          >
+    <div className="step-info">
 
-            <div className="step-number">
-              1
-            </div>
+      <span className="step-title">
+        Scenario
+      </span>
 
-            <div className="step-info">
+      <span className="step-subtitle">
+        Choose negotiation context
+      </span>
 
-              <span className="step-title">
-                Scenario
-              </span>
-
-              <span className="step-subtitle">
-                Choose context
-              </span>
-
-            </div>
-
-          </div>
+    </div>
+  </div>
 
 
-          <div
-            className={`progress-line ${
-              step === "configuration-choice" ||
-              step === "configure" ||
-              step === "ready" ||
-              step === "negotiation"
-                ? "completed"
-                : ""
-            }`}
-          />
+  {/* ================= LINE 1 ================= */}
+
+  <div
+    className={`progress-line ${
+      step === "configuration-choice" ||
+      step === "configure" ||
+      step === "ready" ||
+      step === "negotiation"
+        ? "completed"
+        : ""
+    }`}
+  />
 
 
-          {/* STEP 2 */}
+  {/* ================= STEP 2 ================= */}
 
-          <div
-            className={`progress-step ${
-              step === "configuration-choice" ||
-              step === "configure"
-                ? "active"
-                : step === "ready" ||
-                  step === "negotiation"
-                ? "completed"
-                : ""
-            }`}
-          >
+  <div
+    className={`progress-step ${
+      step === "configuration-choice" ||
+      step === "configure"
+        ? "active"
+        : step === "ready" ||
+          step === "negotiation"
+        ? "completed"
+        : ""
+    }`}
+  >
+    <div className="step-number">
+      2
+    </div>
 
-            <div className="step-number">
-              2
-            </div>
+    <div className="step-info">
 
-            <div className="step-info">
+      <span className="step-title">
+        Configure
+      </span>
 
-              <span className="step-title">
-                Configure
-              </span>
+      <span className="step-subtitle">
+        Set up predefined or custom agents
+      </span>
 
-              <span className="step-subtitle">
-                Set agent personas
-              </span>
-
-            </div>
-
-          </div>
+    </div>
+  </div>
 
 
-          <div
-            className={`progress-line ${
-              step === "ready" ||
-              step === "negotiation"
-                ? "completed"
-                : ""
-            }`}
-          />
+  {/* ================= LINE 2 ================= */}
+
+  <div
+    className={`progress-line ${
+      step === "ready" ||
+      step === "negotiation"
+        ? "completed"
+        : ""
+    }`}
+  />
 
 
-          {/* STEP 3 */}
+  {/* ================= STEP 3 ================= */}
 
-          <div
-            className={`progress-step ${
-              step === "ready"
-                ? "active"
-                : step === "negotiation"
-                ? "completed"
-                : ""
-            }`}
-          >
+  <div
+    className={`progress-step ${
+      step === "ready"
+        ? "active"
+        : step === "negotiation"
+        ? "completed"
+        : ""
+    }`}
+  >
+    <div className="step-number">
+      3
+    </div>
 
-            <div className="step-number">
-              3
-            </div>
+    <div className="step-info">
 
-            <div className="step-info">
+      <span className="step-title">
+        Ready
+      </span>
 
-              <span className="step-title">
-                Ready
-              </span>
+      <span className="step-subtitle">
+        Review setup and start negotiation
+      </span>
 
-              <span className="step-subtitle">
-                Review setup
-              </span>
+    </div>
+  </div>
 
-            </div>
-
-          </div>
-
-        </div>
+</div>
 
 
         {/* ================= SCENARIO ================= */}
