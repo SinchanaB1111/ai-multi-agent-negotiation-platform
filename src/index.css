@@ -1,0 +1,59 @@
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
+
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Arial, sans-serif;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================================================
+   VITE ROOT FIX - FULL SCREEN
+========================================================= */
+
+#root {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 0;
+
+  text-align: left;
+
+  border: none;
+
+  display: block;
+}
