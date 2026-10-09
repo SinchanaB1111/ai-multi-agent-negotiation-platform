@@ -1,0 +1,248 @@
+# Agile Product Backlog & Epic Breakdown
+
+## Project Title
+
+**Development of NegoSphere: AI-Driven Multi-Agent Negotiation Training & Simulation Platform**
+
+---
+
+## 1. Product Vision & Target Personas
+
+### Product Vision
+
+To develop an interactive, AI-driven negotiation training and simulation platform that enables users to practice realistic negotiations, observe AI agents negotiating with one another, understand strategic decision-making, and evaluate negotiation outcomes. NegoSphere combines configurable stakeholder agents, scenario-based negotiation, turn-by-turn orchestration, negotiation analytics, and learning insights to provide a repeatable environment for developing negotiation skills.
+
+### Target Personas
+
+1. **Negotiation Trainee / Student:** Wants to practice negotiation techniques, receive realistic AI counteroffers, understand negotiation strategies, and improve decision-making through feedback.
+2. **Business Professional / Negotiator:** Wants to simulate procurement, sales, salary, contracts, and other business negotiations to evaluate alternative strategies before real-world discussions.
+3. **Trainer / Educator:** Wants to demonstrate negotiation tactics, compare agent behavior, and use simulation results to explain concessions, bargaining strategies, and agreement outcomes.
+4. **Platform User / Analyst:** Wants to review completed negotiations, compare performance, inspect transcripts, and access reports and analytics to identify areas for improvement.
+
+---
+
+## 2. Definition of Done (DoD)
+
+A user story or feature is considered **Done** when the applicable criteria below are satisfied:
+
+* [ ] **Code Complete:** The feature is implemented within the existing NegoSphere architecture without unnecessarily replacing established components.
+* [ ] **Functional Validation:** The feature behaves according to its acceptance criteria for relevant Simulation Mode and Practice Mode workflows.
+* [ ] **Negotiation Integrity:** Offers, counteroffers, acceptance, rejection, concessions, agreement values, and deadlocks are handled consistently with the negotiation rules.
+* [ ] **Testing:** Relevant verification scripts, automated tests, and integration checks pass. Test results must be recorded accurately.
+* [ ] **Data Integrity:** Completed negotiations, transcripts, outcomes, analytics, and reports reflect the actual session data.
+* [ ] **Security and Privacy:** Authentication, authorization, secrets, and user data are handled according to the platform's implemented security controls.
+* [ ] **UI/UX and Responsiveness:** The feature follows the existing interface design and remains usable across supported screen sizes.
+* [ ] **Documentation:** Relevant setup instructions, environment variables, architecture details, and feature documentation are updated.
+* [ ] **Review:** The implementation is reviewed by the team or project supervisor, where applicable.
+
+---
+
+## 3. Product Epics & Story Cards
+
+**Priority definitions:** MUST = essential, SHOULD = important, COULD = optional enhancement.
+
+**Story points:** The estimates below are proposed planning estimates, not measured implementation effort.
+
+**Status:** The entries marked `TO VERIFY` must be updated after checking the current code and test results. Do not mark a story `DONE` solely because it appears in the project plan.
+
+### Epic 1: User Authentication, Identity & Profile Management
+
+| Story ID   | Story Title                        | User Story Description                                                                                 | Priority | Story Points | Status    |
+| ---------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------ | -------- | -----------: | --------- |
+| US-AUTH-01 | User Registration and Login        | As a user, I want to register and sign in so that I can access the NegoSphere platform.                | MUST     |         5 SP | TO VERIFY |
+| US-AUTH-02 | Email OTP Verification             | As a user, I want to verify my identity using an email OTP so that account access is protected.        | MUST     |         5 SP | TO VERIFY |
+| US-AUTH-03 | Google and GitHub Authentication   | As a user, I want to sign in using supported external providers for convenient access.                 | SHOULD   |         5 SP | TO VERIFY |
+| US-AUTH-04 | Profile Information Management     | As a user, I want to update my profile information so that my account details remain current.          | SHOULD   |         3 SP | TO VERIFY |
+| US-AUTH-05 | Password and Notification Settings | As a user, I want to manage password and notification settings through the available account controls. | SHOULD   |         5 SP | TO VERIFY |
+
+### Epic 2: Scenario Library & Custom Negotiation Setup
+
+| Story ID  | Story Title                     | User Story Description                                                                                             | Priority | Story Points | Status    |
+| --------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------ | -------- | -----------: | --------- |
+| US-SCN-01 | Predefined Scenario Library     | As a user, I want to browse predefined negotiation scenarios so that I can quickly start a relevant exercise.      | MUST     |         5 SP | TO VERIFY |
+| US-SCN-02 | Scenario Search and Discovery   | As a user, I want to search and explore scenarios by name or description so that I can find suitable negotiations. | SHOULD   |         3 SP | TO VERIFY |
+| US-SCN-03 | Custom Scenario Creation        | As a user, I want to define a custom negotiation scenario with my own context and objectives.                      | MUST     |         8 SP | TO VERIFY |
+| US-SCN-04 | Negotiation Party Configuration | As a user, I want to configure the participating parties, goals, constraints, and initial negotiation conditions.  | MUST     |         8 SP | TO VERIFY |
+| US-SCN-05 | Scenario Selection and Launch   | As a user, I want to select a scenario and launch it in the appropriate mode.                                      | MUST     |         5 SP | TO VERIFY |
+
+### Epic 3: Multi-Agent Negotiation Engine & Orchestration
+
+| Story ID  | Story Title                       | User Story Description                                                                                                                          | Priority | Story Points | Status    |
+| --------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -----------: | --------- |
+| US-NEG-01 | Stakeholder Agent Configuration   | As a user, I want agents to have distinct goals, constraints, and personalities so that negotiations represent different stakeholder interests. | MUST     |         8 SP | TO VERIFY |
+| US-NEG-02 | Offer and Counteroffer Generation | As a user, I want agents to generate contextually appropriate offers and counteroffers based on negotiation state.                              | MUST     |         8 SP | TO VERIFY |
+| US-NEG-03 | Negotiation Turn Orchestration    | As a user, I want the orchestrator to manage turn-taking and session state so that agents negotiate in a controlled sequence.                   | MUST     |         8 SP | TO VERIFY |
+| US-NEG-04 | Acceptance and Rejection Rules    | As a user, I want offers to be accepted or rejected according to the configured negotiation rules and constraints.                              | MUST     |         8 SP | TO VERIFY |
+| US-NEG-05 | Concessions and Deadlock Handling | As a user, I want concessions, rejection, and deadlock outcomes to be represented accurately.                                                   | MUST     |         6 SP | TO VERIFY |
+| US-NEG-06 | Negotiation Round Tracking        | As a user, I want each negotiation round recorded so that I can follow the discussion and review the final outcome.                             | MUST     |         5 SP | TO VERIFY |
+
+### Epic 4: Simulation Mode — AI vs. AI Negotiation
+
+| Story ID  | Story Title                        | User Story Description                                                                                                 | Priority | Story Points | Status    |
+| --------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------- | -----------: | --------- |
+| US-SIM-01 | AI Agent vs. AI Agent Simulation   | As a user, I want two or more configured AI stakeholders to negotiate so that I can observe different strategies.      | MUST     |         8 SP | TO VERIFY |
+| US-SIM-02 | Round-by-Round Simulation Playback | As a user, I want to observe offers and responses as the simulation progresses rather than seeing only a final result. | MUST     |         6 SP | TO VERIFY |
+| US-SIM-03 | Live Negotiation Transcript        | As a user, I want to see the sequence of statements, offers, and responses during a simulation.                        | MUST     |         5 SP | TO VERIFY |
+| US-SIM-04 | Live Stance and Metrics Display    | As a user, I want to observe agent positions and relevant negotiation metrics while the simulation runs.               | SHOULD   |         6 SP | TO VERIFY |
+| US-SIM-05 | Simulation Outcome Summary         | As a user, I want a clear summary of agreement, rejection, or deadlock when the simulation finishes.                   | MUST     |         5 SP | TO VERIFY |
+
+### Epic 5: Practice Mode — Human vs. AI Negotiation
+
+| Story ID   | Story Title                              | User Story Description                                                                                                                  | Priority | Story Points | Status    |
+| ---------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------- | -----------: | --------- |
+| US-PRAC-01 | Human vs. AI Negotiation                 | As a trainee, I want to negotiate directly with an AI stakeholder so that I can practice my skills.                                     | MUST     |         8 SP | TO VERIFY |
+| US-PRAC-02 | User Offer Submission                    | As a trainee, I want to submit offers and counteroffers so that I can actively participate in each negotiation round.                   | MUST     |         6 SP | TO VERIFY |
+| US-PRAC-03 | Realistic Offer Validation               | As a trainee, I want offers to be evaluated against the scenario's constraints so that implausible offers are not accepted incorrectly. | MUST     |         8 SP | TO VERIFY |
+| US-PRAC-04 | AI Acceptance and Counteroffer Decisions | As a trainee, I want the AI to accept acceptable offers and counter offers that do not meet its requirements.                           | MUST     |         8 SP | TO VERIFY |
+| US-PRAC-05 | Practice Outcome and Feedback            | As a trainee, I want to see the final outcome and performance feedback after my negotiation.                                            | MUST     |         5 SP | TO VERIFY |
+
+### Epic 6: AI Negotiation Learning Experience
+
+| Story ID  | Story Title                       | User Story Description                                                                                                             | Priority | Story Points | Status    |
+| --------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------- | -----------: | --------- |
+| US-LRN-01 | Negotiation Tactic Identification | As a learner, I want key negotiation tactics identified so that I can recognize strategic behavior.                                | MUST     |         8 SP | TO VERIFY |
+| US-LRN-02 | Explain the Agent's Move          | As a learner, I want explanations of an agent's move based on the negotiation history and current state.                           | MUST     |         8 SP | TO VERIFY |
+| US-LRN-03 | Turning Point Analysis            | As a learner, I want important changes in offers and concessions highlighted so that I can understand what influenced the outcome. | SHOULD   |         6 SP | TO VERIFY |
+| US-LRN-04 | Key Takeaways and Lessons         | As a learner, I want the system to summarize useful lessons and negotiation principles after a simulation.                         | MUST     |         5 SP | TO VERIFY |
+| US-LRN-05 | Negotiation Skills Observed       | As a learner, I want observed skills and areas for improvement presented so that I can develop better strategies.                  | SHOULD   |         6 SP | TO VERIFY |
+
+### Epic 7: Reports, Analytics & Negotiation History
+
+| Story ID  | Story Title                              | User Story Description                                                                                                        | Priority | Story Points | Status    |
+| --------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------- | -----------: | --------- |
+| US-REP-01 | Completed Negotiation History            | As a user, I want completed negotiations retained in my history so that I can revisit previous sessions.                      | MUST     |         6 SP | TO VERIFY |
+| US-REP-02 | Negotiation Performance Metrics          | As a user, I want relevant metrics such as agreement value, round count, offers, concessions, and score displayed in reports. | MUST     |         8 SP | TO VERIFY |
+| US-REP-03 | Negotiation Progress Visualization       | As a user, I want negotiation progress and concession patterns visualized so that I can understand how positions changed.     | SHOULD   |         6 SP | TO VERIFY |
+| US-REP-04 | Full Transcript and Outcome Report       | As a user, I want a report containing the transcript, summary, final terms, and outcome so that I can review the session.     | MUST     |         8 SP | TO VERIFY |
+| US-REP-05 | PDF, JSON, and HTML Export               | As a user, I want to export reports in supported formats so that I can save or share negotiation results.                     | MUST     |         6 SP | TO VERIFY |
+| US-REP-06 | Correct Rejection and Deadlock Reporting | As a user, I want unsuccessful negotiations reported without presenting a nonexistent agreement value.                        | MUST     |         5 SP | TO VERIFY |
+
+### Epic 8: Dashboard, Navigation & User Experience
+
+| Story ID | Story Title                 | User Story Description                                                                                                  | Priority | Story Points | Status    |
+| -------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------- | -----------: | --------- |
+| US-UI-01 | Dynamic Dashboard           | As a user, I want dashboard summaries and recent activity to reflect available negotiation data.                        | MUST     |         6 SP | TO VERIFY |
+| US-UI-02 | Main Navigation             | As a user, I want clear navigation to the dashboard, new negotiation, scenario library, reports, profile, and settings. | MUST     |         4 SP | TO VERIFY |
+| US-UI-03 | Negotiation Arena Interface | As a user, I want a readable negotiation workspace with a transcript and relevant live indicators.                      | MUST     |         6 SP | TO VERIFY |
+| US-UI-04 | Responsive Layout           | As a user, I want the main platform screens to remain usable at supported desktop and smaller viewport sizes.           | SHOULD   |         6 SP | TO VERIFY |
+| US-UI-05 | Settings and Appearance     | As a user, I want supported appearance and platform settings to work consistently.                                      | SHOULD   |         4 SP | TO VERIFY |
+
+### Epic 9: Platform Backend, Persistence & Integration
+
+| Story ID  | Story Title                          | User Story Description                                                                                                     | Priority | Story Points | Status    |
+| --------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- | -------- | -----------: | --------- |
+| US-INT-01 | Frontend and Backend API Integration | As a user, I want frontend requests to reach the appropriate backend services so that platform features operate correctly. | MUST     |         8 SP | TO VERIFY |
+| US-INT-02 | AI Service Integration               | As a user, I want the platform's configured AI service to support agent responses and negotiation analysis.                | MUST     |         8 SP | TO VERIFY |
+| US-INT-03 | User and Session Data Persistence    | As a user, I want supported account and negotiation data to persist across sessions.                                       | MUST     |         8 SP | TO VERIFY |
+| US-INT-04 | Environment Configuration            | As a developer, I want service URLs, database settings, and API credentials managed through environment configuration.     | MUST     |         5 SP | TO VERIFY |
+| US-INT-05 | Service Health and Error Handling    | As a developer, I want backend health checks and meaningful error handling so that service issues can be diagnosed.        | SHOULD   |         5 SP | TO VERIFY |
+
+### Epic 10: Quality Assurance, Security & Release Readiness
+
+| Story ID | Story Title                        | User Story Description                                                                                                             | Priority | Story Points | Status    |
+| -------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------- | -----------: | --------- |
+| US-QA-01 | Negotiation Rule Verification      | As a developer, I want automated checks for offer validation, acceptance, rejection, concessions, and deadlock behavior.           | MUST     |         8 SP | TO VERIFY |
+| US-QA-02 | Scenario Regression Testing        | As a developer, I want the predefined scenarios verified so that changes do not unexpectedly break existing workflows.             | MUST     |         6 SP | TO VERIFY |
+| US-QA-03 | Practice Mode Decision Testing     | As a developer, I want human offer acceptance and rejection decisions tested against expected behavior.                            | MUST     |         6 SP | TO VERIFY |
+| US-QA-04 | Report Integrity Verification      | As a developer, I want report data checked against the completed negotiation state so that metrics and outcomes remain consistent. | MUST     |         6 SP | TO VERIFY |
+| US-QA-05 | Frontend Build and Lint Validation | As a developer, I want the frontend build and lint checks to pass before release.                                                  | MUST     |         5 SP | TO VERIFY |
+| US-QA-06 | Setup and Project Documentation    | As a developer, I want installation, environment configuration, testing, and architecture documented for future contributors.      | SHOULD   |         4 SP | TO VERIFY |
+
+---
+
+## 4. Product Backlog Prioritization
+
+The following order is a proposed implementation priority, not a statement that all work remains unfinished.
+
+| Priority | Backlog Area                            | Reason                                                              |
+| -------- | --------------------------------------- | ------------------------------------------------------------------- |
+| 1        | Authentication and platform access      | Establishes controlled user access.                                 |
+| 2        | Scenario library and configuration      | Provides the inputs required to start negotiations.                 |
+| 3        | Negotiation engine and orchestration    | Supplies the core negotiation behavior.                             |
+| 4        | Practice Mode and Simulation Mode       | Delivers the platform's primary user experiences.                   |
+| 5        | Reports, analytics, and history         | Enables users to review results and past sessions.                  |
+| 6        | Learning experience                     | Converts negotiation sessions into learning opportunities.          |
+| 7        | Backend integration and persistence     | Supports reliable communication and data retention.                 |
+| 8        | Dashboard and user experience           | Improves navigation and access to platform features.                |
+| 9        | Quality assurance and release readiness | Validates behavior, reporting accuracy, and deployment preparation. |
+
+---
+
+## 5. Core Acceptance Criteria
+
+### Negotiation Engine
+
+* Each round follows the configured turn-taking and negotiation rules.
+* Offers are evaluated against the relevant scenario constraints.
+* Acceptance, rejection, counteroffers, and deadlocks produce distinct outcomes.
+* The transcript records the actual sequence of negotiation rounds.
+
+### Simulation Mode
+
+* AI agents negotiate in a visible, round-by-round sequence.
+* The interface displays the session's evolving transcript and available metrics.
+* The completed result accurately reflects agreement, rejection, or deadlock.
+
+### Practice Mode
+
+* The user can submit offers and respond to AI counteroffers.
+* AI decisions reflect the configured agent goals and constraints.
+* The final result and any performance metrics reflect the actual interaction.
+
+### Learning Experience
+
+* Explanations reference observable offers, concessions, and events from the session.
+* Turning points and takeaways are tied to the negotiation history.
+* The interface distinguishes observed behavior from general negotiation advice.
+
+### Reports and Analytics
+
+* Report values correspond to the underlying completed session.
+* Rejected and deadlocked negotiations do not display a fabricated agreement value.
+* Supported exports contain the relevant transcript, outcome, and metrics.
+* Historical sessions remain available according to the platform's configured persistence rules.
+
+### Quality Assurance
+
+* Relevant verification scripts and tests are executed and their results recorded.
+* Existing authentication and login behavior is protected during unrelated feature changes.
+* Build and lint status is documented based on actual execution, not assumed.
+
+---
+
+## 6. Suggested Sprint Breakdown
+
+| Sprint   | Focus Area                             | Planned Deliverables                                                                               |
+| -------- | -------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Sprint 1 | Architecture and Project Setup         | Review existing architecture, configure services, document dependencies and environment variables. |
+| Sprint 2 | Authentication and Scenario Management | Verify account workflows, scenario browsing, and custom scenario configuration.                    |
+| Sprint 3 | Negotiation Engine                     | Validate agent configuration, offer generation, turn-taking, and negotiation outcomes.             |
+| Sprint 4 | Simulation and Practice Modes          | Verify AI-versus-AI simulation and user-versus-AI negotiation workflows.                           |
+| Sprint 5 | Learning Experience                    | Implement or validate tactic explanations, turning points, takeaways, and observed skills.         |
+| Sprint 6 | Reports and Analytics                  | Validate transcripts, performance metrics, session history, and report exports.                    |
+| Sprint 7 | Dashboard and Platform Integration     | Verify navigation, profile, settings, backend communication, and persistence.                      |
+| Sprint 8 | Quality Assurance                      | Run negotiation, scenario, practice, and report-integrity verification.                            |
+| Sprint 9 | Documentation and Release Preparation  | Update project documentation, review environment setup, and record build and deployment status.    |
+
+---
+
+## 7. Expected Project Outcomes
+
+* A scenario-based environment for AI-driven negotiation training.
+* Simulation and Practice modes for observing and participating in negotiations.
+* Configurable AI stakeholder agents with different objectives and constraints.
+* A negotiation transcript and outcome analysis for completed sessions.
+* Learning insights that help users understand negotiation tactics and concessions.
+* Historical reports and supported export formats for reviewing past negotiations.
+* Project documentation and verification procedures to support continued development.
+
+---
+
+## 8. Backlog Maintenance Notes
+
+* Review priorities with the project supervisor or team before each sprint.
+* Split large stories into smaller tasks when implementation requires multiple independent deliverables.
+* Record actual story status only after checking the code and relevant tests.
+* Re-estimate story points based on team experience and remaining work.
+* Keep completed, in-progress, blocked, and planned items distinct.
+* Update this document when features or acceptance criteria change.
