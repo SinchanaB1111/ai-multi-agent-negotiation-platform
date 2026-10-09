@@ -1,0 +1,343 @@
+# Agile Sprint Plan (Week 01 to Week 09)
+
+## Project Title
+
+**Development of NegoSphere: AI-Driven Multi-Agent Negotiation Training & Simulation Platform**
+
+---
+
+## Sprint Overview Summary
+
+NegoSphere is developed in iterative stages covering project architecture, scenario management, multi-agent negotiation logic, Simulation Mode, Practice Mode, learning insights, reporting, platform integration, and release validation.
+
+The sprint plan below adapts the nine-week structure to NegoSphere. Sprint story-point values, completion percentages, and defect counts are intentionally not fabricated; use the team's accepted backlog and sprint records to populate those metrics.
+
+| Sprint | Week | Primary Theme | Planned Deliverables | Key Validation |
+|:---:|:---:|---|---|---|
+| Sprint 1 | Week 1 (Days 01–05) | Requirements, Architecture & Setup | Review existing architecture, document services and configuration, establish sprint backlog and acceptance criteria. | Confirm local setup and service boundaries. |
+| Sprint 2 | Week 2 (Days 06–10) | Scenario Library & Custom Scenario Setup | Review predefined scenarios, scenario search/navigation, custom scenario form and agent configuration. | Validate scenario selection and configuration flow. |
+| Sprint 3 | Week 3 (Days 11–15) | Negotiation Engine & Orchestration | Validate turn-taking, offers, counteroffers, constraints, concessions, acceptance, rejection, and deadlock. | Run core negotiation verification. |
+| Sprint 4 | Week 4 (Days 16–20) | Simulation Mode | Verify AI-versus-AI round progression, transcript updates, stance indicators, and terminal outcomes. | Confirm results are revealed in the correct sequence. |
+| Sprint 5 | Week 5 (Days 21–25) | Practice Mode & Realistic Decisions | Verify user offer submission, AI response decisions, offer boundaries, and realistic negotiation behavior. | Test acceptance, counteroffer, rejection, and deadlock cases. |
+| Sprint 6 | Week 6 (Days 26–30) | Learning Experience | Review tactic explanations, turning points, key takeaways, and observed negotiation skills. | Ensure explanations are grounded in session history. |
+| Sprint 7 | Week 7 (Days 31–35) | Reports, Analytics & Session History | Validate KPIs, transcript, final terms, exports, completed-session history, and outcome integrity. | Compare report values with the actual session state. |
+| Sprint 8 | Week 8 (Days 36–40) | Dashboard, Profile & Platform Integration | Review dashboard metrics, recent activity, profile/settings, frontend/backend communication, and persistence. | Run relevant integration and dashboard checks. |
+| Sprint 9 | Week 9 (Days 41–45) | Regression, Documentation & Release Readiness | Run relevant verification scripts, review build/lint status, update README and Agile documents, record known limitations. | Record actual results for each release check. |
+
+---
+
+## Sprint 1: Requirements, Architecture & Project Setup
+
+**Duration:** Week 1 (Day 01 to Day 05)
+
+**Sprint Goal:** Understand and document the existing NegoSphere architecture without rebuilding or unnecessarily replacing existing implementations.
+
+### Planned User Stories
+
+- `US-ARCH-01`: Review the existing React/Vite frontend, Node.js AI gateway, and Python FastAPI platform backend.
+- `US-ARCH-02`: Document project structure, service responsibilities, environment variables, and local startup requirements.
+- `US-ARCH-03`: Establish sprint backlog, acceptance criteria, and verification checklist for core workflows.
+
+### Task Breakdown
+
+1. **Day 01:** Review project objectives, user roles, main workflows, and existing architecture.
+2. **Day 02:** Map frontend components, backend services, negotiation logic, and API boundaries.
+3. **Day 03:** Review environment configuration and document required local services and ports.
+4. **Day 04:** Identify core negotiation workflows and define acceptance criteria for agreement, rejection, and deadlock.
+5. **Day 05:** Prepare architecture and setup documentation; review the sprint backlog and initial validation plan.
+
+### Sprint Review
+
+- **Review focus:** Architecture clarity, setup reproducibility, and a prioritized backlog.
+- **Evidence to record:** Confirmed startup commands, documented service responsibilities, and agreed acceptance criteria.
+- **Potential improvement:** Identify integration dependencies early and avoid duplicating existing functionality.
+
+---
+
+## Sprint 2: Scenario Library & Custom Scenario Setup
+
+**Duration:** Week 2 (Day 06 to Day 10)
+
+**Sprint Goal:** Validate the scenario discovery and setup flow used to start a negotiation.
+
+### Planned User Stories
+
+- `US-SCN-01`: Browse the predefined scenario library.
+- `US-SCN-02`: Search scenarios by name or description.
+- `US-SCN-03`: Create a custom negotiation scenario.
+- `US-SCN-04`: Configure stakeholder goals, constraints, and personalities.
+- `US-SCN-05`: Select a scenario and launch the appropriate negotiation mode.
+
+### Task Breakdown
+
+1. **Day 06:** Review the predefined scenario data and verify that scenario cards show accurate information.
+2. **Day 07:** Validate scenario library navigation, search, and scenario selection.
+3. **Day 08:** Review custom scenario fields and input validation.
+4. **Day 09:** Validate agent configuration, goals, constraints, and personality settings.
+5. **Day 10:** Test scenario launch and record any issues in the sprint review.
+
+### Sprint Review
+
+- **Review focus:** Scenario discovery and configuration flow.
+- **Evidence to record:** Tested scenario names, search cases, custom scenario inputs, and launch results.
+- **Potential improvement:** Keep scenario data and configuration behavior consistent across entry points.
+
+---
+
+## Sprint 3: Negotiation Engine & Multi-Agent Orchestration
+
+**Duration:** Week 3 (Day 11 to Day 15)
+
+**Sprint Goal:** Verify the negotiation rules and orchestration that control offers, turns, and outcomes.
+
+### Planned User Stories
+
+- `US-NEG-01`: Configure stakeholder agents with distinct objectives and constraints.
+- `US-NEG-02`: Generate offers and counteroffers based on negotiation state.
+- `US-NEG-03`: Manage turn-taking and negotiation round progression.
+- `US-NEG-04`: Apply acceptance and rejection rules consistently.
+- `US-NEG-05`: Track concessions and distinguish deadlock from agreement.
+- `US-NEG-06`: Preserve the actual sequence of negotiation rounds in the transcript.
+
+### Task Breakdown
+
+1. **Day 11:** Review agent goals, constraints, and negotiation state representation.
+2. **Day 12:** Validate offer and counteroffer generation against scenario boundaries.
+3. **Day 13:** Verify orchestrator turn order, round limits, and state transitions.
+4. **Day 14:** Test acceptance, rejection, concession, and deadlock conditions.
+5. **Day 15:** Run relevant negotiation verification scripts and review edge cases.
+
+### Sprint Review
+
+- **Review focus:** Correct, repeatable negotiation decisions.
+- **Evidence to record:** Inputs, expected outcomes, actual outcomes, and verification results.
+- **Potential improvement:** Keep decision rules deterministic where required and prevent inconsistent terminal states.
+
+---
+
+## Sprint 4: Simulation Mode — AI vs. AI
+
+**Duration:** Week 4 (Day 16 to Day 20)
+
+**Sprint Goal:** Validate that users can observe AI stakeholders negotiating round by round.
+
+### Planned User Stories
+
+- `US-SIM-01`: Run an AI-versus-AI negotiation using configured agents.
+- `US-SIM-02`: Display each round as it progresses.
+- `US-SIM-03`: Update the transcript with offers and responses.
+- `US-SIM-04`: Show available agent stance indicators and negotiation metrics.
+- `US-SIM-05`: Present a final agreement, rejection, or deadlock summary.
+
+### Task Breakdown
+
+1. **Day 16:** Review simulation initialization and agent configuration.
+2. **Day 17:** Verify that rounds and responses are surfaced in the intended sequence.
+3. **Day 18:** Check transcript completeness and the ordering of events.
+4. **Day 19:** Validate live indicators and final outcome presentation.
+5. **Day 20:** Run scenario regression checks and document simulation issues.
+
+### Sprint Review
+
+- **Review focus:** Clear, observable simulation progression.
+- **Evidence to record:** Round sequence, transcript, final status, and scenario used.
+- **Potential improvement:** Avoid presenting a final result before the user can observe the intermediate negotiation rounds.
+
+---
+
+## Sprint 5: Practice Mode & Realistic Negotiation Decisions
+
+**Duration:** Week 5 (Day 21 to Day 25)
+
+**Sprint Goal:** Verify the human-versus-AI workflow and ensure that AI decisions respect scenario constraints.
+
+### Planned User Stories
+
+- `US-PRAC-01`: Allow the user to negotiate directly with an AI stakeholder.
+- `US-PRAC-02`: Accept and validate user-submitted offers.
+- `US-PRAC-03`: Evaluate offers against configured goals and constraints.
+- `US-PRAC-04`: Accept suitable offers or return counteroffers/rejections where appropriate.
+- `US-PRAC-05`: Display an accurate outcome and relevant performance feedback.
+
+### Task Breakdown
+
+1. **Day 21:** Review the Practice Mode session lifecycle and user offer submission.
+2. **Day 22:** Test offers inside, outside, and near the configured acceptance boundaries.
+3. **Day 23:** Validate AI acceptance, counteroffer, and rejection decisions.
+4. **Day 24:** Test concession tracking, round progression, and deadlock behavior.
+5. **Day 25:** Run relevant Practice Mode and human-decision verification scripts.
+
+### Sprint Review
+
+- **Review focus:** Realistic and consistent responses to user offers.
+- **Evidence to record:** Offer, scenario constraints, expected decision, actual decision, and test result.
+- **Potential improvement:** Avoid accepting implausible offers and avoid forcing an agreement when the parties' constraints are incompatible.
+
+---
+
+## Sprint 6: AI Negotiation Learning Experience
+
+**Duration:** Week 6 (Day 26 to Day 30)
+
+**Sprint Goal:** Validate the learning layer that helps users understand the tactics and decisions observed in negotiation simulations.
+
+### Planned User Stories
+
+- `US-LRN-01`: Identify relevant negotiation tactics.
+- `US-LRN-02`: Explain agent moves using the session history and current state.
+- `US-LRN-03`: Highlight turning points and important concessions.
+- `US-LRN-04`: Present key takeaways and negotiation principles.
+- `US-LRN-05`: Summarize observed skills and opportunities for improvement.
+
+### Task Breakdown
+
+1. **Day 26:** Review learning panels and the data used to produce explanations.
+2. **Day 27:** Check tactic explanations against actual offers and responses.
+3. **Day 28:** Validate turning-point and concession analysis.
+4. **Day 29:** Review key takeaways and observed-skills summaries for relevance and clarity.
+5. **Day 30:** Test learning insights across different outcomes, including agreement and deadlock.
+
+### Sprint Review
+
+- **Review focus:** Evidence-based, understandable learning feedback.
+- **Evidence to record:** Sample transcript, generated insight, and reviewer assessment.
+- **Potential improvement:** Separate observed facts from general advice and avoid unsupported explanations.
+
+---
+
+## Sprint 7: Reports, Analytics & Session History
+
+**Duration:** Week 7 (Day 31 to Day 35)
+
+**Sprint Goal:** Ensure that historical reports accurately reflect completed negotiation sessions.
+
+### Planned User Stories
+
+- `US-REP-01`: Store and display completed negotiation history according to configured persistence rules.
+- `US-REP-02`: Calculate relevant metrics such as rounds, offers, concessions, and negotiation score.
+- `US-REP-03`: Present negotiation progress and concession analysis.
+- `US-REP-04`: Display the full transcript, summary, and final terms where an agreement exists.
+- `US-REP-05`: Export reports in supported PDF, JSON, and HTML formats.
+- `US-REP-06`: Represent rejection and deadlock without inventing an agreement value.
+
+### Task Breakdown
+
+1. **Day 31:** Review session-history selection and report navigation.
+2. **Day 32:** Compare report KPIs against the saved negotiation state.
+3. **Day 33:** Verify transcript completeness and concession calculations.
+4. **Day 34:** Validate supported export formats and print layout.
+5. **Day 35:** Run report-integrity verification and review unsuccessful negotiation outcomes.
+
+### Sprint Review
+
+- **Review focus:** Consistent report data across the UI and exports.
+- **Evidence to record:** Session identifier, outcome, displayed metrics, exported content, and test result.
+- **Potential improvement:** Derive report views and exports from consistent session data to prevent mismatches.
+
+---
+
+## Sprint 8: Dashboard, Profile & Platform Integration
+
+**Duration:** Week 8 (Day 36 to Day 40)
+
+**Sprint Goal:** Validate the connection between user-facing pages, backend services, and persisted negotiation data.
+
+### Planned User Stories
+
+- `US-UI-01`: Display dashboard summaries based on available session data.
+- `US-UI-02`: Provide clear navigation between dashboard, negotiation, scenarios, reports, profile, and settings.
+- `US-UI-03`: Display recent activity with relevant scenario and session information.
+- `US-UI-04`: Validate profile and settings workflows that are implemented in the project.
+- `US-INT-01`: Verify frontend communication with the appropriate backend services.
+- `US-INT-02`: Verify configured AI service integration and error handling.
+- `US-INT-03`: Check persistence and retrieval of supported user and negotiation data.
+
+### Task Breakdown
+
+1. **Day 36:** Review dashboard values and trace them to their source data.
+2. **Day 37:** Validate navigation and recent-activity links.
+3. **Day 38:** Verify profile and settings behavior without disturbing protected authentication flows.
+4. **Day 39:** Test required backend services, API configuration, and error states.
+5. **Day 40:** Run dashboard-performance and relevant integration checks.
+
+### Sprint Review
+
+- **Review focus:** Consistent data and navigation across platform modules.
+- **Evidence to record:** Tested route, service, input, expected result, and actual result.
+- **Potential improvement:** Keep performance metrics tied to the intended session types and avoid using stale or unrelated records.
+
+---
+
+## Sprint 9: Regression, Documentation & Release Readiness
+
+**Duration:** Week 9 (Day 41 to Day 45)
+
+**Sprint Goal:** Consolidate verification evidence, resolve known issues, and prepare accurate technical and Agile documentation.
+
+### Planned User Stories
+
+- `US-QA-01`: Verify core negotiation rules and terminal outcomes.
+- `US-QA-02`: Run regression checks across predefined scenarios.
+- `US-QA-03`: Verify Practice Mode decisions and orchestration.
+- `US-QA-04`: Validate report integrity and dashboard behavior.
+- `US-QA-05`: Run frontend build and lint checks and record actual results.
+- `US-DOC-01`: Complete README, architecture, setup, backlog, sprint-plan, metrics, retrospective, and daily stand-up documentation.
+
+### Task Breakdown
+
+1. **Day 41:** Run the relevant core negotiation and scenario verification scripts.
+2. **Day 42:** Run Practice Mode, orchestrator, and human-decision verification scripts.
+3. **Day 43:** Run negotiation analysis, report-integrity, and dashboard-performance checks.
+4. **Day 44:** Run frontend build, lint, and applicable backend tests; record successes, failures, and unverified items.
+5. **Day 45:** Review documentation, known limitations, environment configuration, and release checklist.
+
+### Sprint Review
+
+- **Review focus:** Traceable verification evidence and clear handover documentation.
+- **Evidence to record:** Commands run, dates, exit statuses, test counts, known defects, and remaining work.
+- **Potential improvement:** Never equate passing targeted scripts with a fully verified production deployment.
+
+---
+
+## Sprint Metrics Template
+
+Complete this table from the team's actual sprint tracker after each sprint review.
+
+| Sprint | Planned Story Points | Completed Story Points | Completion Rate | Defects Opened | Defects Resolved | Outstanding Work |
+|---|---:|---:|---:|---:|---:|---|
+| Sprint 1 | TBD | TBD | TBD | TBD | TBD | TBD |
+| Sprint 2 | TBD | TBD | TBD | TBD | TBD | TBD |
+| Sprint 3 | TBD | TBD | TBD | TBD | TBD | TBD |
+| Sprint 4 | TBD | TBD | TBD | TBD | TBD | TBD |
+| Sprint 5 | TBD | TBD | TBD | TBD | TBD | TBD |
+| Sprint 6 | TBD | TBD | TBD | TBD | TBD | TBD |
+| Sprint 7 | TBD | TBD | TBD | TBD | TBD | TBD |
+| Sprint 8 | TBD | TBD | TBD | TBD | TBD | TBD |
+| Sprint 9 | TBD | TBD | TBD | TBD | TBD | TBD |
+
+### Metric formulas
+
+- **Completion rate:** Completed story points ÷ Planned story points × 100.
+- **Average velocity:** Total completed story points ÷ Number of completed sprints.
+- **Defect resolution rate:** Defects resolved ÷ Defects opened × 100, when defects were opened.
+- **Remaining work:** Work not yet accepted as Done at sprint end.
+
+Do not copy story-point estimates from the product backlog into the completed column unless the stories were actually accepted as Done during that sprint.
+
+---
+
+## Overall Sprint Plan Summary
+
+The nine-week plan organizes NegoSphere development into a progression from architecture and scenario setup through negotiation orchestration, Simulation Mode, Practice Mode, learning insights, reports, platform integration, and final verification.
+
+The most important quality goals across all sprints are:
+
+- Negotiation decisions should respect scenario goals and constraints.
+- Simulation rounds and transcripts should reflect the actual sequence of events.
+- Practice Mode should handle acceptance, counteroffers, rejection, and deadlock realistically.
+- Learning insights should be grounded in observable session events.
+- Reports, analytics, and exports should agree with the actual negotiation outcome.
+- Existing authentication and login behavior should remain protected during unrelated work.
+- Build, lint, integration, and deployment status should be reported only from actual checks.
+
+**Reporting note:** This plan is tailored to NegoSphere. It does not claim that the illustrative story-point values or completion rates from the examination-monitoring reference project apply to NegoSphere.
