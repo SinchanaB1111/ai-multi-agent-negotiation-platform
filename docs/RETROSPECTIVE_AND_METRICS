@@ -1,0 +1,220 @@
+# Agile Metrics, Burndown Trajectory & Sprint Retrospectives
+
+## Project Title
+
+**Development of NegoSphere: AI-Driven Multi-Agent Negotiation Training & Simulation Platform**
+
+---
+
+## 1. Sprint Performance and Delivery Metrics
+
+NegoSphere is an AI-driven negotiation training platform built around predefined and custom scenarios, configurable stakeholder agents, Simulation Mode, Practice Mode, negotiation learning insights, reports, analytics, and user session history.
+
+The available project records describe a nine-week development plan and include a team Agile workbook, daily stand-up documentation, and dedicated verification scripts. However, the available records do not provide a verified, sprint-by-sprint story-point ledger or defect register for NegoSphere. For that reason, this document reports the known delivery areas and verification evidence without presenting unverified story-point totals or defect counts as measured results.
+
+### Sprint overview
+
+| Sprint | Development focus | Planned / documented deliverables | Measurement status |
+|---|---|---|---|
+| Sprint 1 | Architecture and scenario foundations | Review the existing architecture; establish reusable scenario and persona fields; validate initial scenario templates. | Story-point totals not recorded in the available evidence. |
+| Sprint 2 | Negotiation rules and orchestration | Validate offer decisions, round progression, conversation history, concession tracking, and AI-provider fallback behavior. | Story-point totals not recorded in the available evidence. |
+| Sprint 3 | Practice Mode and strategic negotiation | Integrate Practice Mode with the orchestration layer; verify deadlocks and realistic offer boundaries; strengthen acceptance, counteroffer, and rejection behavior. | Story-point totals not recorded in the available evidence. |
+| Sprint 4 | Reports, dashboard, and history | Check report outcomes against session state; connect dashboard performance and recent activity to negotiation data; validate user history flows. | Story-point totals not recorded in the available evidence. |
+| Sprint 5 | Learning experience and refinements | Review learning explanations, tactics, turning points, key takeaways, and negotiation skills observed in simulation data. | Separate sprint totals not recorded in the available evidence. |
+| Sprint 6 | Reports and analytics validation | Verify negotiation metrics, transcript completeness, agreement terms, unsuccessful outcomes, and supported exports. | Separate sprint totals not recorded in the available evidence. |
+| Sprint 7 | Profile, settings, and platform integration | Validate profile information, session history, notifications/settings where implemented, and frontend/backend integration. | Separate sprint totals not recorded in the available evidence. |
+| Sprint 8 | Regression and reliability | Run focused negotiation, scenario, Practice Mode, report-integrity, and dashboard-performance checks. | Script results must be interpreted individually; no complete release-wide pass rate is established here. |
+| Sprint 9 | Documentation and release preparation | Consolidate setup instructions, architecture documentation, Agile artifacts, and release verification records. | Final build and deployment status must be confirmed separately. |
+
+**Metric reporting rule:** A story is counted as completed only when its acceptance criteria are met and the team accepts it. A planned feature, a code change, or a passing targeted script alone does not establish completion of every related story.
+
+### Metrics and formulas
+
+Use the following formulas if sprint-level records are available:
+
+- **Sprint completion rate** = Completed story points ÷ Committed story points × 100.
+- **Average velocity** = Total completed story points ÷ Number of completed sprints.
+- **Defect resolution rate** = Defects resolved during the period ÷ Defects reported during the period × 100, where the denominator is greater than zero.
+- **Open defect count** = Defects still unresolved at the end of the reporting period.
+- **Scope change** = Stories added or removed after sprint planning, recorded separately from the original commitment.
+
+The available records do not support a reliable numerical value for NegoSphere's total story points, average velocity, sprint completion percentage, or defect resolution rate. These values should not be inferred from the story-point estimates in the product backlog.
+
+---
+
+## 2. Burndown and Cumulative Delivery Trajectory
+
+A burndown chart shows the remaining work in a sprint over time. A burn-up chart shows completed work against the total scope. A cumulative-flow diagram shows how work moves between states such as To Do, In Progress, Review, and Done.
+
+The available NegoSphere project materials describe features, tasks, and verification scripts, but do not provide dated daily remaining-work snapshots or an accepted story-point history. Therefore, a numeric burndown curve cannot be reconstructed reliably from the available records.
+
+### Recommended chart data
+
+For each sprint, record the following information in the team's project tracker:
+
+| Date / Day | Sprint | Committed story points | Remaining story points | Completed story points | Added / removed scope |
+|---|---|---:|---:|---:|---:|
+| Sprint start | Sprint N | Record at planning | Initial remaining work | 0 | 0 |
+| Mid-sprint review | Sprint N | Unchanged baseline | Record actual remaining work | Record accepted work | Record any scope change |
+| Sprint end | Sprint N | Original commitment | Remaining unfinished work | Accepted completed work | Final scope change |
+
+### How to interpret the trajectory
+
+- **Healthy progress:** Remaining work trends downward as stories satisfy their acceptance criteria.
+- **Scope change:** Added or removed work is recorded separately so that the chart does not misrepresent the original commitment.
+- **Blocked work:** Items waiting on AI service configuration, integration, or unresolved behavior should be identified rather than counted as completed.
+- **Quality gate:** A story is not considered Done merely because its implementation exists; relevant acceptance checks and review criteria must be satisfied.
+- **Cumulative delivery:** Completed story points should increase only when work is accepted, not when it is merely started or submitted for review.
+
+### NegoSphere areas suitable for tracking
+
+Track progress independently for:
+
+1. Scenario library and custom scenario setup.
+2. Negotiation engine and orchestrator.
+3. Simulation Mode round-by-round behavior.
+4. Practice Mode offer and decision handling.
+5. AI negotiation learning explanations.
+6. Reports, analytics, and session history.
+7. Profile, settings, and dashboard integration.
+8. Regression tests, documentation, and release readiness.
+
+**Reporting limitation:** Do not publish a numeric burndown chart or claim a linear delivery trajectory until actual sprint data has been collected.
+
+---
+
+## 3. Verification and Quality Metrics
+
+NegoSphere includes dedicated verification scripts for important negotiation and reporting workflows. The project records identify the following verification areas:
+
+| Verification area | Project check | What it is intended to validate |
+|---|---|---|
+| Core negotiation | `npm run verify:negotiation` | Core negotiation rules and outcomes. |
+| Scenario regression | `npm run verify:all-scenarios` | Behavior across the predefined scenario set. |
+| Practice Mode | `npm run verify:practice` | Practice Mode negotiation behavior. |
+| Practice orchestration | `npm run verify:practice-orchestrator` | Integration with the negotiation orchestrator. |
+| Human offer decisions | `npm run verify:practice-decisions` | Practice Mode acceptance and rejection decisions. |
+| Negotiation analysis | `npm run verify:negotiation-analysis` | Negotiation analysis and insights. |
+| Strategic negotiation | `npm run verify:strategic-negotiation` | Strategic negotiation constraints and behavior. |
+| Report integrity | `npm run verify:report-integrity` | Consistency between negotiation outcomes and report data. |
+| Dashboard performance | `npm run verify:dashboard-performance` | Dashboard performance-related checks. |
+
+These scripts are available in the project configuration. Their presence does not, by itself, prove that every script passed in the current checkout. Record the date, command, exit status, and relevant output whenever each check is run.
+
+### Release checks that must be reported separately
+
+| Check | Command | Reporting requirement |
+|---|---|---|
+| Frontend production build | `npm run build` | Record success or failure from an actual run. |
+| Lint | `npm run lint` | Record warnings and errors, not just the exit status. |
+| Negotiation verification | Relevant `verify:*` scripts | Record each script's individual result. |
+| Python backend tests | `python -m pytest` from the configured backend environment, if applicable | Record collected, passed, failed, and skipped tests. |
+| Backend health | Check the configured health endpoint while the backend is running | Record actual response and service configuration. |
+| Integration test | Start the required services and test a complete workflow | Record the workflow, environment, and outcome. |
+
+A passing targeted verification script should not be represented as proof that the complete frontend build, every integration, all external AI providers, or deployment have passed.
+
+---
+
+## 4. Sprint-by-Sprint Retrospective Analysis
+
+The following retrospective themes are based on NegoSphere's documented development areas and team Agile notes. They summarize the project's engineering focus and proposed process improvements; they should not be read as independently measured performance claims.
+
+### Sprint 1 — Architecture and Scenario Foundations
+
+- **What went well:** The project established a clearer separation between the frontend, AI gateway, platform backend, and negotiation domain logic. Reusable scenario and persona fields provide a foundation for scenario-driven workflows.
+- **What could be improved:** Scenario assumptions and interfaces between components should be agreed upon before parallel implementation begins.
+- **Action item:** Keep architecture notes, environment configuration, scenario definitions, and acceptance criteria in version control. Validate a small end-to-end scenario early.
+
+### Sprint 2 — Negotiation Rules and Orchestration
+
+- **What went well:** The team Agile notes emphasize centralizing negotiation state, round progression, history, and concession tracking in the orchestrator.
+- **What could be improved:** Duplicated turn-progression logic and unvalidated AI decisions can create inconsistent behavior.
+- **Action item:** Keep acceptance, counteroffer, rejection, and turn-transition rules centralized where appropriate. Add focused tests for malformed decisions and boundary conditions.
+
+### Sprint 3 — Practice Mode and Strategic Negotiation
+
+- **What went well:** The documented work focuses on using the orchestration layer for Practice Mode and on making offers reflect negotiation constraints.
+- **What could be improved:** A negotiation should not be forced into agreement when neither party's requirements are satisfied. Extreme or implausible offers must be handled consistently.
+- **Action item:** Test acceptable ranges, strategic constraints, repeated offers, no-movement conditions, rejection, and deadlock outcomes as separate cases.
+
+### Sprint 4 — Reports, Dashboard, and History
+
+- **What went well:** The team's Agile notes identify report integrity, data-driven dashboard metrics, and connection of recent activity to stored session history as important improvements.
+- **What could be improved:** Stale report values or static dashboard metrics can misrepresent actual negotiation activity.
+- **Action item:** Compare each displayed metric against the underlying session state. Test agreement, rejection, and deadlock reports, including transcript completeness.
+
+### Sprint 5 — Learning Experience and Refinements
+
+- **What went well:** The learning experience connects simulation to practical concepts such as tactics, concessions, turning points, and key takeaways.
+- **What could be improved:** Explanations may be unhelpful if they are generic or unsupported by the actual negotiation transcript.
+- **Action item:** Ground explanations in observable offers and decisions. Distinguish evidence from the session from general strategic guidance.
+
+### Sprint 6 — Reports and Analytics Validation
+
+- **What went well:** Consolidating reports, performance metrics, transcripts, and exports gives users a place to review completed negotiations.
+- **What could be improved:** Different views and export formats can diverge if they calculate results independently.
+- **Action item:** Derive reports from a consistent session snapshot and compare on-screen data with PDF, JSON, and HTML output.
+
+### Sprint 7 — Profile, Settings, and Platform Integration
+
+- **What went well:** Connecting user activity, profile information, and negotiation history makes the platform more useful across sessions.
+- **What could be improved:** UI metrics can become inconsistent if they use stale or unrelated session data.
+- **Action item:** Verify the source of each profile and dashboard metric. Test history navigation and confirm that Practice Mode performance uses the intended sessions.
+
+### Sprint 8 — Regression and Reliability
+
+- **What went well:** Dedicated verification scripts make it possible to repeat checks for core negotiation, scenario behavior, Practice Mode decisions, report integrity, and dashboard performance.
+- **What could be improved:** A focused test can pass while another service, the production build, or a complete integration workflow remains unverified.
+- **Action item:** Maintain a release checklist covering individual verification scripts, frontend build, lint, backend tests, service health, and end-to-end workflows.
+
+### Sprint 9 — Documentation and Release Preparation
+
+- **What went well:** Consolidating the README, daily stand-up logs, product backlog, metrics, and retrospectives improves project handover and presentation readiness.
+- **What could be improved:** Documentation can accidentally state planned work or assumed test outcomes as completed facts.
+- **Action item:** Review each claim against code, test output, and sprint records. Record known limitations and leave unverified build or deployment results clearly identified.
+
+---
+
+## 5. Key Internship Learnings & Competencies
+
+The following competencies align with the NegoSphere project. Include them in a personal internship report only to the extent that they reflect work actually performed.
+
+1. **Agile Engineering Discipline:** Product backlog refinement, sprint planning, daily stand-ups, task ownership, review meetings, and retrospectives.
+2. **Multi-Agent System Design:** Modeling stakeholders with distinct goals, constraints, and personalities and coordinating their turns through an orchestrator.
+3. **Negotiation Rule Engineering:** Handling offers, counteroffers, concessions, acceptance, rejection, and deadlock behavior.
+4. **Full-Stack Integration:** Understanding the relationship between a React/Vite frontend, Node.js AI gateway, and Python FastAPI platform backend.
+5. **AI Integration:** Incorporating configured language-model services into structured agent responses and negotiation analysis.
+6. **Learning-Oriented Analysis:** Connecting negotiation events with tactics, turning points, lessons, and observed skills.
+7. **Reporting and Analytics:** Presenting transcripts, agreement terms, metrics, and historical session data consistently across the UI and exports.
+8. **Quality Assurance:** Writing and running targeted verification checks and using regression tests to validate changes.
+9. **Technical Documentation:** Maintaining setup instructions, architecture notes, backlog stories, stand-up records, and release checklists.
+
+---
+
+## 6. Continuous Improvement Action Plan
+
+| Improvement area | Action | Evidence of completion |
+|---|---|---|
+| Sprint estimation | Estimate stories during planning and record committed points. | Sprint planning record. |
+| Delivery tracking | Update remaining work and completed work throughout each sprint. | Dated burndown or burn-up data. |
+| Negotiation realism | Test offer boundaries, counteroffers, rejection, and deadlock. | Test output and acceptance results. |
+| Report integrity | Compare reports and exports with stored session outcomes. | Report-integrity test results. |
+| Learning quality | Check that explanations reference the actual session. | Reviewed sample analyses and tests. |
+| Integration reliability | Verify required services and complete user workflows. | Integration checklist and logs. |
+| Release readiness | Run build, lint, backend tests, and relevant verification scripts. | Dated release checklist. |
+| Documentation quality | Reconcile project documentation with implemented behavior. | Reviewed README and Agile documents. |
+
+---
+
+## 7. Overall Sprint Review
+
+NegoSphere's Agile work is organized around building and validating a complete negotiation-training workflow: scenario selection, agent configuration, negotiation orchestration, simulation and practice, learning analysis, reporting, user history, and platform integration.
+
+The project's dedicated verification scripts provide a basis for repeatable quality checks. The most important continuing priorities are realistic negotiation decisions, accurate transcripts and outcomes, learning explanations grounded in session data, consistent report exports, and clear release verification.
+
+Sprint velocity, completion percentages, defect totals, test pass rates, and claims of production readiness should be added only when supported by the team's actual records.
+
+### Final Reporting Note
+
+This document deliberately does not invent a total story-point count, 100% completion rate, defect totals, or a universal test pass rate. The available NegoSphere materials do not establish those aggregate figures. Populate the metrics tables from the team's sprint tracker and actual test outputs before using them as measured results in an academic submission.
