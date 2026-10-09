@@ -5,29 +5,31 @@
 The platform simulates real-world negotiation situations involving different stakeholders, goals, constraints, interests, personalities, and strategies. It provides an interactive Negotiation Arena, structured negotiation rules, learning insights, reports, analytics, and negotiation history.
 
 ## Table of Contents
-+ Project Overview
-+ Objectives
-+ Features
-+ Scenario Library
-+ Technology Stack
-+ System Architecture
-+ Project Structure
-+ Prerequisites
-+ Installation
-+ Environment Configuration
-+ Running the Application
-+ Negotiation Workflow
-+ Negotiation Learning Experience
-+ Reports and Analytics
-+ Database
-+ Testing
-+ Agile Development
-+ Deployment
-+ Security Considerations
-+ Future Enhancements
-+ Team Members
-+ License
-+ Project Overview
+
+* [Project Overview](#project-overview)
+* [Objectives](#objectives)
+* [Features](#features)
+* [Scenario Library](#scenario-library)
+* [Technology Stack](#technology-stack)
+* [System Architecture](#system-architecture)
+* [Negotiation Flow](#negotiation-flow)
+* [Project Structure](#-project-structure)
+* [Prerequisites](#prerequisites)
+* [Installation](#installation)
+* [Environment Configuration](#environment-configuration)
+* [Running the Application](#running-the-application)
+* [Available npm Scripts](#available-npm-scripts)
+* [Negotiation Learning Experience](#negotiation-learning-experience)
+* [Reports and Analytics](#reports-and-analytics)
+* [Database](#database)
+* [Testing](#testing)
+* [Agile Development](#agile-development)
+* [Deployment](#deployment)
+* [Security Considerations](#security-considerations)
+* [Future Enhancements](#future-enhancements)
+* [Team Members](#team-members)
+* [License](#license)
+
 ### Project Overview 
 Negotiation is an important part of procurement, sales, employment, contracts, project management, and strategic decision-making. Traditional negotiation training can be difficult to scale because realistic practice requires appropriate scenarios, participants, time, and repeatable evaluation.
 
@@ -223,39 +225,29 @@ Users can create their own negotiation context with custom agents, goals, constr
 
 The library supports displaying predefined scenarios together with custom scenarios supplied by the application.
 
-**Technology Stack**
-**Frontend**
-+ React
-+ Vite
-+ JavaScript
-+ JSX
-+ CSS
-  
-**Node.js AI Gateway**
-+ Node.js
-+ Express
-+ Google GenAI SDK
-+ Configurable LLM provider integration
-  
-**Python Platform Backend**
-+ Python
-+ FastAPI
-+ Uvicorn
-+ SQLAlchemy
-+ Pydantic
-  
-**Database**
-+ SQLite for local development.
-+ PostgreSQL support for production configurations.
+## Technology Stack
 
-**AI Integration**
-+ Large Language Models.
-+ Gemini integration.
-+ Configurable AI provider and fallback logic, depending on the active configuration.
+| Layer            | Technologies                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------- |
+| Frontend         | React, JavaScript, JSX, CSS, Vite                                                              |
+| AI Gateway       | Node.js, Express                                                                               |
+| Platform Backend | Python, FastAPI, Uvicorn                                                                       |
+| Data Layer       | SQLAlchemy, SQLite development configuration, PostgreSQL support where configured and verified |
+| AI Integration   | Google GenAI SDK and the model/provider configured for the application                         |
+| Reporting        | jsPDF and jsPDF AutoTable, where used                                                          |
+| Testing          | Project-specific verification scripts and backend tests                                        |
 
-**System Architecture**
+The platform uses a frontend application, an AI gateway, and a Python platform backend to support negotiation interactions, scenario management, and related platform services.
 
-NegoSphere uses a frontend, a Python platform backend, a Node.js AI gateway, database storage, and external AI services.
+## System Architecture
+
+NegoSphere is organized into three main application layers:
+
+* **Frontend:** Provides the user interface for scenario selection, negotiation sessions, reports, analytics, and profile features.
+* **AI Gateway:** Handles AI-related requests through the configured language-model integration.
+* **Platform Backend:** Provides backend services for supported platform features, including authentication, negotiation data, scenario management, and analytics.
+
+The application uses the configured database for supported data persistence. The exact responsibilities and connections of each service are represented in the system architecture diagram below.
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/c6d24e6e-6a92-4ffd-9c2b-dc4a09dbb6d5" />
 
@@ -548,11 +540,25 @@ With the virtual environment activated, install the backend dependencies:
 pip install -r platform-backend/requirements.txt
 ```
 
-## Environment Configuration
+## Environment Variables
 
-NegoSphere uses environment variables to configure API endpoints, AI providers, database connections, and other backend services.
+Configure the environment variables required by each service before starting the application.
 
-**Important:** Never commit API keys, passwords, OAuth client secrets, authentication secrets, or production database credentials to GitHub.
+| Variable                        | Purpose                                                   |
+| ------------------------------- | --------------------------------------------------------- |
+| `VITE_PLATFORM_API_BASE_URL`    | Base URL for the platform API                             |
+| `VITE_AI_API_BASE_URL`          | Base URL for the AI service                               |
+| `VITE_API_BASE_URL`             | General API base URL, where used                          |
+| `VITE_NEGOTIATION_API_BASE_URL` | Base URL for negotiation API requests, where used         |
+| `LLM_PROVIDER`                  | Selects the configured language-model provider            |
+| `LLM_API_KEY`                   | API key for the configured AI provider                    |
+| `LLM_MODEL`                     | Configured AI model identifier                            |
+| `DATABASE_URL`                  | Database connection configuration                         |
+| `AUTH_SECRET_KEY`               | Secret used by the backend's authentication configuration |
+| `CORS_ORIGINS`                  | Allowed frontend origins for cross-origin requests        |
+
+Use the project's `.env.example` files as the source of truth for required variables and their service-specific locations. Never commit real API keys, passwords, or authentication secrets.
+
 
 ### Frontend Configuration
 
