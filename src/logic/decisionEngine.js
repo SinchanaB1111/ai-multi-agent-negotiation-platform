@@ -4,6 +4,13 @@ import {
   getAcceptanceThreshold,
   getPersonalityPolicy,
 } from "./personalityPolicy.js";
+import {
+  chooseStrategy,
+  explainStrategy,
+  getStrategicConcessionFraction,
+  buildConditionalTrade,
+} from "./strategyEngine.js";
+import { isClearlyUnreasonableOffer } from "./negotiationRules.js";
 
 export const DECISION = {
   ACCEPT: "ACCEPT",
@@ -64,7 +71,17 @@ export function evaluateOfferDetails(
     minimumAcceptable,
   } = agent.negotiation;
 
-  const acceptanceThreshold = getAcceptanceThreshold(agent);
+  const round = Number(context.currentRound || 1);
+  const maxRounds = Math.max(1, Number(context.maxRounds) || 5);
+  const roundProgress = Math.min(1, Math.max(0, (round - 1) / (maxRounds - 1 || 1)));
+  const concessionProgress = roundProgress ** 2;
+  const preferredThreshold = getAcceptanceThreshold(agent);
+  let acceptanceThreshold = preferredThreshold;
+  if (agent.decisionType === "minimize" && Number.isFinite(maximumAcceptable)) {
+    acceptanceThreshold += (maximumAcceptable - preferredThreshold) * concessionProgress;
+  } else if (agent.decisionType === "maximize" && Number.isFinite(minimumAcceptable)) {
+    acceptanceThreshold -= (preferredThreshold - minimumAcceptable) * concessionProgress;
+  }
   const previousOffers = Array.isArray(context.previousOffers)
     ? context.previousOffers
     : [];
@@ -74,8 +91,6 @@ export function evaluateOfferDetails(
       .filter((offer) => offer?.agentId === agent.id)
       .slice(-1)[0] ||
     null;
-
-  const round = Number(context.currentRound || 1);
 
   const result = {
     decision: DECISION.COUNTER,
@@ -89,6 +104,18 @@ export function evaluateOfferDetails(
     withinHardConstraints: true,
     reason: "Offer is negotiable but does not yet meet the preferred acceptance boundary.",
   };
+
+  // Realistic negotiation guard: an extreme outlier is rejected even when
+  // it is mathematically favorable. This prevents absurd offers such as ₹1
+  // from being accepted simply because the agent wants a lower price.
+  if (isClearlyUnreasonableOffer(agent, offerValue)) {
+    return {
+      ...result,
+      decision: DECISION.REJECT,
+      withinHardConstraints: false,
+      reason: "Offer is outside the agent's realistic negotiation range and is treated as non-credible."
+    };
+  }
 
   // MINIMIZE: lower values are better for the agent.
   if (agent.decisionType === "minimize") {
@@ -156,311 +183,116 @@ export function evaluateOffer(agent, offerValue, context = {}) {
 // Used when Gemini is unavailable.
 // =====================================================
 
-function getConcessionFraction(agent) {
-  const label = getPersonalityPolicy(agent.personality)?.label?.toLowerCase() || "";
+function getConcessionFraction(agent, currentRound = 1, maxRounds = 5, context = {}) {
+  return getStrategicConcessionFraction(agent, {
+    ...context,
+    currentRound,
+    maxRounds,
+  });
+}
 
-  if (label.includes("aggressive")) return 0.25;
-  if (label.includes("risk")) return 0.20;
-  return 0.35;
+function clampToNegotiationBoundary(agent, value) {
+  let next = Math.max(1, Math.round(value));
+  if (agent.decisionType === "minimize" && Number.isFinite(agent.negotiation.maximumAcceptable)) {
+    next = Math.min(next, agent.negotiation.maximumAcceptable);
+  }
+  if (agent.decisionType === "maximize" && Number.isFinite(agent.negotiation.minimumAcceptable)) {
+    next = Math.max(next, agent.negotiation.minimumAcceptable);
+  }
+  return next;
+}
+
+function clampToJointFeasibleRange(agent, value, opponentAgent = null) {
+  let next = clampToNegotiationBoundary(agent, value);
+  if (!opponentAgent?.negotiation) return next;
+
+  if (agent.decisionType === "minimize") {
+    const lower = Number(opponentAgent.negotiation.minimumAcceptable);
+    const upper = Number(agent.negotiation.maximumAcceptable);
+    if (Number.isFinite(lower) && Number.isFinite(upper) && lower <= upper) {
+      next = Math.min(upper, Math.max(lower, next));
+    }
+  } else if (agent.decisionType === "maximize") {
+    const lower = Number(agent.negotiation.minimumAcceptable);
+    const upper = Number(opponentAgent.negotiation.maximumAcceptable);
+    if (Number.isFinite(lower) && Number.isFinite(upper) && lower <= upper) {
+      next = Math.min(upper, Math.max(lower, next));
+    }
+  }
+  return next;
 }
 
 export function generateCounterOffer(
   agent,
   opponentOfferValue,
-  previousOwnOffer = null
+  previousOwnOffer = null,
+  context = {}
 ) {
   validateAgent(agent);
 
-  if (
-    typeof opponentOfferValue !==
-      "number" ||
-    !Number.isFinite(
-      opponentOfferValue
-    )
-  ) {
-    throw new Error(
-      "Opponent offer must be a valid number."
+  if (typeof opponentOfferValue !== "number" || !Number.isFinite(opponentOfferValue)) {
+    throw new Error("Opponent offer must be a valid number.");
+  }
+
+  const { targetValue } = agent.negotiation;
+  const previous = typeof previousOwnOffer === "number" ? previousOwnOffer : null;
+  const round = Number(context.currentRound || 1);
+  const maxRounds = Number(context.maxRounds || 5);
+  const ownOffers = Array.isArray(context.ownOffers) ? context.ownOffers : [];
+  const strategy = chooseStrategy(agent, {
+    ...context,
+    currentRound: round,
+    maxRounds,
+    ownOffers,
+    opponentOffer: opponentOfferValue,
+    previousOwnOffer: previous,
+  });
+
+  if (previous == null) {
+    // With no prior own offer, respond from the agent's target toward the
+    // opponent's observable position. Do not create a new counter outside
+    // the target/opponent interval; that produces artificial rejection.
+    const responseShare = strategy === "ANCHOR" ? 0.35 : 0.30;
+    return clampToJointFeasibleRange(
+      agent,
+      targetValue + (opponentOfferValue - targetValue) * responseShare,
+      context.opponentAgent || null
     );
   }
 
-  const {
-    targetValue,
-    maximumAcceptable,
-    minimumAcceptable,
-  } = agent.negotiation;
+  const gap = opponentOfferValue - previous;
+  const targetGap = targetValue - previous;
+  const rate = getConcessionFraction(agent, round, maxRounds, {
+    ...context,
+    ownOffers,
+    opponentOffer: opponentOfferValue,
+    previousOwnOffer: previous,
+  });
 
-  const policy =
-    getPersonalityPolicy(
-      agent.personality
-    );
-
-  // ===================================================
-  // MINIMIZE AGENT
-  //
-  // Lower is better.
-  // ===================================================
-
-  if (
-    agent.decisionType === "minimize"
-  ) {
-    let counter;
-
-    // If this is our first counter, move
-    // between opponent offer and target.
-    if (
-      typeof previousOwnOffer !==
-        "number"
-    ) {
-      counter =
-        Math.round(
-          (
-            opponentOfferValue +
-            targetValue
-          ) / 2
-        );
-    } else {
-      // Gradually move our previous offer
-      // toward the opponent's offer.
-      counter =
-        Math.round(
-          (
-            previousOwnOffer +
-            opponentOfferValue
-          ) / 2
-        );
-    }
-
-    // Aggressive agents concede less.
-    if (
-      policy?.label
-        ?.toLowerCase()
-        .includes("aggressive")
-    ) {
-      counter =
-        Math.round(
-          previousOwnOffer !== null
-            ? previousOwnOffer -
-                (
-                  previousOwnOffer -
-                  opponentOfferValue
-                ) *
-                  0.25
-            : (
-                targetValue +
-                opponentOfferValue
-              ) /
-                2
-        );
-    }
-
-    // Collaborative agents move more
-    // toward the middle.
-    if (
-      policy?.label
-        ?.toLowerCase()
-        .includes("collaborative")
-    ) {
-      counter =
-        Math.round(
-          (
-            targetValue +
-            opponentOfferValue
-          ) / 2
-        );
-    }
-
-    // Risk-averse agents protect target.
-    if (
-      policy?.label
-        ?.toLowerCase()
-        .includes("risk")
-    ) {
-      counter =
-        Math.round(
-          (
-            targetValue * 0.7 +
-            opponentOfferValue * 0.3
-          )
-        );
-    }
-
-    if (typeof previousOwnOffer === "number") {
-      const gapToOpponent =
-        Math.abs(previousOwnOffer - opponentOfferValue);
-
-      // If both sides repeated the exact same value, do not freeze the
-      // negotiation. Move a small step toward the agent's target.
-      if (gapToOpponent === 0) {
-        const targetGap = targetValue - previousOwnOffer;
-        if (targetGap !== 0) {
-          counter = Math.round(
-            previousOwnOffer +
-              targetGap *
-                getConcessionFraction(agent)
-          );
-        } else {
-          counter = previousOwnOffer;
-        }
-      } else {
-        const maxMovement =
-          gapToOpponent *
-          getConcessionFraction(agent);
-
-        const direction =
-          opponentOfferValue < previousOwnOffer ? -1 : 1;
-
-        const limitedCounter =
-          previousOwnOffer + direction * maxMovement;
-
-        // Never move farther toward the opponent than the allowed concession.
-        counter =
-          direction < 0
-            ? Math.max(counter, limitedCounter)
-            : Math.min(counter, limitedCounter);
-      }
-    }
-
-    if (typeof maximumAcceptable === "number") {
-      counter = Math.min(counter, maximumAcceptable);
-    }
-
-    counter = Math.max(1, Math.round(counter));
-
-    return counter;
+  let counter;
+  if (gap === 0) {
+    // Do not loop on identical offers. Probe toward the target, but keep the move small.
+    counter = previous + targetGap * rate * 0.70;
+  } else {
+    counter = previous + gap * rate;
   }
 
-  // ===================================================
-  // MAXIMIZE AGENT
-  //
-  // Higher is better.
-  // ===================================================
+  // Never overshoot the agent's preferred target in a single concession.
+  if (agent.decisionType === "minimize" && previous < targetValue && counter > targetValue) counter = targetValue;
+  if (agent.decisionType === "minimize" && previous > targetValue && counter < targetValue) counter = targetValue;
+  if (agent.decisionType === "maximize" && previous > targetValue && counter < targetValue) counter = targetValue;
+  if (agent.decisionType === "maximize" && previous < targetValue && counter > targetValue) counter = targetValue;
 
-  if (
-    agent.decisionType === "maximize"
-  ) {
-    let counter;
+  return clampToJointFeasibleRange(agent, counter, context.opponentAgent || null);
+}
 
-    if (
-      typeof previousOwnOffer !==
-        "number"
-    ) {
-      counter =
-        Math.round(
-          (
-            opponentOfferValue +
-            targetValue
-          ) / 2
-        );
-    } else {
-      counter =
-        Math.round(
-          (
-            previousOwnOffer +
-            opponentOfferValue
-          ) / 2
-        );
-    }
-
-    // Aggressive agents concede less.
-    if (
-      policy?.label
-        ?.toLowerCase()
-        .includes("aggressive")
-    ) {
-      counter =
-        Math.round(
-          previousOwnOffer !== null
-            ? previousOwnOffer +
-                (
-                  opponentOfferValue -
-                  previousOwnOffer
-                ) *
-                  0.25
-            : (
-                targetValue +
-                opponentOfferValue
-              ) /
-                2
-        );
-    }
-
-    // Collaborative agents move toward middle.
-    if (
-      policy?.label
-        ?.toLowerCase()
-        .includes("collaborative")
-    ) {
-      counter =
-        Math.round(
-          (
-            targetValue +
-            opponentOfferValue
-          ) / 2
-        );
-    }
-
-    // Risk-averse agents protect target.
-    if (
-      policy?.label
-        ?.toLowerCase()
-        .includes("risk")
-    ) {
-      counter =
-        Math.round(
-          (
-            targetValue * 0.7 +
-            opponentOfferValue * 0.3
-          )
-        );
-    }
-
-    if (typeof previousOwnOffer === "number") {
-      const gapToOpponent =
-        Math.abs(previousOwnOffer - opponentOfferValue);
-
-      // If both sides repeated the exact same value, move toward the
-      // agent's target instead of producing another identical offer.
-      if (gapToOpponent === 0) {
-        const targetGap = targetValue - previousOwnOffer;
-        if (targetGap !== 0) {
-          counter = Math.round(
-            previousOwnOffer +
-              targetGap *
-                getConcessionFraction(agent)
-          );
-        } else {
-          counter = previousOwnOffer;
-        }
-      } else {
-        const maxMovement =
-          gapToOpponent *
-          getConcessionFraction(agent);
-
-        const direction =
-          opponentOfferValue > previousOwnOffer ? 1 : -1;
-
-        const limitedCounter =
-          previousOwnOffer + direction * maxMovement;
-
-        counter =
-          direction > 0
-            ? Math.min(counter, limitedCounter)
-            : Math.max(counter, limitedCounter);
-      }
-    }
-
-    if (typeof minimumAcceptable === "number") {
-      counter = Math.max(counter, minimumAcceptable);
-    }
-
-    counter = Math.max(1, Math.round(counter));
-
-    return counter;
-  }
-
-  throw new Error(
-    `Unknown decision type: ${agent.decisionType}`
-  );
+export function getCounterOfferStrategy(agent, context = {}) {
+  const strategy = chooseStrategy(agent, context);
+  return {
+    strategy,
+    explanation: explainStrategy(agent, strategy, context),
+    conditionalTrade: buildConditionalTrade(agent, context),
+  };
 }
 
 // =====================================================
@@ -470,86 +302,31 @@ export function generateCounterOffer(
 // the first Gemini call can be completed.
 // =====================================================
 
-export function generateOpeningOffer(
-  agent
-) {
+export function generateOpeningOffer(agent) {
   validateAgent(agent);
 
-  const {
-    targetValue,
-    maximumAcceptable,
-    minimumAcceptable,
-  } = agent.negotiation;
+  const { targetValue, maximumAcceptable, minimumAcceptable } = agent.negotiation;
+  let opening;
 
-  // ===================================================
-  // MINIMIZE
-  // ===================================================
-
-  if (
-    agent.decisionType === "minimize"
-  ) {
-    let opening;
-
-    if (
-      typeof maximumAcceptable ===
-        "number"
-    ) {
-      opening =
-        Math.round(
-          (
-            targetValue +
-            maximumAcceptable
-          ) / 2
-        );
-    } else {
-      opening =
-        Math.round(
-          targetValue * 1.1
-        );
-    }
-
-    return Math.max(
-      1,
-      opening
-    );
+  if (agent.decisionType === "minimize") {
+    const room = Number.isFinite(maximumAcceptable)
+      ? Math.max(0, maximumAcceptable - targetValue)
+      : Math.abs(targetValue) * 0.10;
+    // Start below target, but leave credible room to trade upward toward it.
+    opening = targetValue - room * 0.50;
+    if (Number.isFinite(maximumAcceptable)) opening = Math.min(opening, maximumAcceptable);
+  } else if (agent.decisionType === "maximize") {
+    const room = Number.isFinite(minimumAcceptable)
+      ? Math.max(0, targetValue - minimumAcceptable)
+      : Math.abs(targetValue) * 0.10;
+    // Start above target, leaving credible room to trade downward toward it.
+    opening = targetValue + room * 0.50;
+    if (Number.isFinite(minimumAcceptable)) opening = Math.max(opening, minimumAcceptable);
+  } else {
+    throw new Error(`Unknown decision type: ${agent.decisionType}`);
   }
 
-  // ===================================================
-  // MAXIMIZE
-  // ===================================================
-
-  if (
-    agent.decisionType === "maximize"
-  ) {
-    let opening;
-
-    if (
-      typeof minimumAcceptable ===
-        "number"
-    ) {
-      opening =
-        Math.round(
-          (
-            targetValue +
-            minimumAcceptable
-          ) / 2
-        );
-    } else {
-      opening =
-        Math.round(
-          targetValue * 0.9
-        );
-    }
-
-    return Math.max(
-      1,
-      opening
-    );
-  }
-
-  throw new Error(
-    `Unknown decision type: ${agent.decisionType}`
-  );
+  return clampToNegotiationBoundary(agent, opening);
 }
 
 // =====================================================
@@ -591,6 +368,9 @@ export function explainDecision(
   if (
     decision === DECISION.REJECT
   ) {
+    if (isClearlyUnreasonableOffer(agent, offerValue)) {
+      return `${agent.name} rejected because the offer is outside a credible negotiation range for the scenario.`;
+    }
     if (
       agent.decisionType ===
       "minimize"
@@ -609,7 +389,7 @@ export function explainDecision(
     )}.`;
   }
 
-  return `${agent.name} made a counteroffer because the offer is negotiable but does not yet meet the preferred acceptance boundary. ${policy?.label || ""}`;
+  return `${agent.name} countered because ${formatMoney(offerValue)} is still ${agent.decisionType === "minimize" ? "above" : "below"} the preferred target of ${formatMoney(targetValue)} while remaining inside the hard boundary. The agent is protecting its target and preserving room for another exchange. ${policy?.label || ""}`;
 }
 
 // =====================================================

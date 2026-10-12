@@ -1,0 +1,243 @@
+/* NegoSphere — login page UI only. Functional markup/auth logic is unchanged. */
+.auth-shell{
+  width:100%;
+  min-height:100vh;
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+.auth-split-shell{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  min-height:100vh;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 76% 18%, rgba(16,105,220,.20), transparent 28%),
+    linear-gradient(115deg,#061c3d 0%,#03183a 52%,#02152f 100%);
+  color:#fff;
+}
+
+/* Static left visual from the approved generated reference. */
+.auth-hero-side{
+  position:absolute;
+  z-index:1;
+  inset:0 auto 0 0;
+  width:56.0%;
+  height:100%;
+  overflow:hidden;
+  background:#061c3d;
+}
+.auth-hero-reference{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  background:url("../assets/negosphere-login-hero-generated.png") center center / 100% 100% no-repeat;
+}
+
+/* Very subtle ambient motion; the artwork itself stays visually stable. */
+.auth-hero-side::after{
+  content:"";
+  position:absolute;
+  inset:-25%;
+  pointer-events:none;
+  background:radial-gradient(circle,rgba(35,180,255,.10),transparent 34%);
+  animation:authAmbientGlow 9s ease-in-out infinite alternate;
+}
+@keyframes authAmbientGlow{
+  from{transform:translate3d(-2%,0,0);opacity:.45}
+  to{transform:translate3d(3%,1%,0);opacity:.8}
+}
+
+.auth-form-side{
+  position:absolute;
+  z-index:5;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  background:transparent;
+}
+
+.auth-create-link{
+  position:absolute;
+  z-index:30;
+  top:22px;
+  right:3.2vw;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:#b9d8f7;
+  font-size:13px;
+  line-height:20px;
+  white-space:nowrap;
+}
+.auth-create-link button{
+  border:0;
+  padding:0;
+  background:transparent;
+  color:#19b7ff;
+  font:inherit;
+  font-weight:700;
+  text-decoration:underline;
+  cursor:pointer;
+}
+
+/* Functional card. Only this element scrolls; the background and viewport remain fixed. */
+.auth-card-light{
+  position:absolute;
+  z-index:20;
+  top:10.65vh;
+  right:4.8vw;
+  left:auto;
+  width:38.55vw;
+  max-width:620px;
+  min-width:470px;
+  height:auto;
+  max-height:calc(100vh - 10.65vh - 28px);
+  min-height:0;
+  box-sizing:border-box;
+  padding:43px 56px 30px;
+  border:1px solid rgba(22,190,255,.88);
+  border-radius:24px;
+  background:linear-gradient(145deg,rgba(7,43,83,.985),rgba(2,25,54,.99));
+  box-shadow:
+    0 22px 70px rgba(0,0,0,.28),
+    0 0 34px rgba(0,173,255,.10),
+    inset 0 0 28px rgba(22,125,208,.07);
+  color:#fff;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(38,183,255,.58) transparent;
+  animation:authCardIn .55s ease-out both, authCardGlow 7s ease-in-out 1s infinite alternate;
+}
+.auth-card-light::-webkit-scrollbar{width:7px}
+.auth-card-light::-webkit-scrollbar-track{background:transparent}
+.auth-card-light::-webkit-scrollbar-thumb{background:rgba(38,183,255,.55);border-radius:20px}
+.auth-card-light::-webkit-scrollbar-thumb:hover{background:rgba(38,183,255,.82)}
+@keyframes authCardIn{
+  from{opacity:0;transform:translate3d(18px,8px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes authCardGlow{
+  from{box-shadow:0 22px 70px rgba(0,0,0,.28),0 0 30px rgba(0,173,255,.08),inset 0 0 28px rgba(22,125,208,.07)}
+  to{box-shadow:0 22px 70px rgba(0,0,0,.28),0 0 44px rgba(0,173,255,.16),inset 0 0 28px rgba(22,125,208,.09)}
+}
+
+/* Brand */
+.nego-logo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  color:#fff;
+  text-align:left;
+}
+.nego-logo strong{
+  display:block;
+  margin:0;
+  color:#fff;
+  font-size:clamp(29px,2.55vw,39px);
+  line-height:1.02;
+  letter-spacing:-1.2px;
+  font-weight:800;
+}
+.nego-logo strong span{color:#fff}
+.nego-logo small{display:none}
+.nego-logo-mark{
+  position:relative;
+  width:clamp(58px,4.8vw,74px);
+  height:clamp(58px,4.8vw,74px);
+  flex:0 0 auto;
+  display:block;
+  border-radius:50%;
+}
+.nego-logo-mark::before{content:"";position:absolute;inset:0;border:8px solid #08aaff;border-radius:50%;box-sizing:border-box}
+.nego-logo-mark::after{content:"";position:absolute;inset:12px;border:6px solid #1d7cf0;border-right-color:transparent;border-radius:50%;box-sizing:border-box;transform:rotate(-38deg)}
+.nego-logo-mark i{display:block;position:absolute;border-radius:50%;background:#06aaff}
+.nego-logo-mark i:nth-child(1){width:31px;height:9px;left:22px;top:33px;transform:rotate(-24deg)}
+.nego-logo-mark i:nth-child(2){width:9px;height:31px;left:32px;top:22px;background:#0e73e6}
+.nego-logo-mark i:nth-child(3){width:10px;height:10px;left:31px;top:32px;background:#fff}
+.nego-logo.compact{margin:0 auto 23px}
+
+.auth-copy{text-align:center}
+.auth-copy h1{margin:0 0 8px;color:#fff;font-size:clamp(26px,2.1vw,33px);line-height:1.15;letter-spacing:-.7px;font-weight:800}
+.auth-copy p{width:100%;margin:0 auto 30px;color:#9ed7ff;font-size:clamp(13px,1.05vw,16px);line-height:1.42}
+
+.auth-card-light form{display:grid;gap:20px}
+.auth-card-light label{display:grid;gap:7px;color:#fff;font-size:clamp(13px,1vw,15px);font-weight:600}
+.auth-card-light input{
+  width:100%;
+  min-height:52px;
+  box-sizing:border-box;
+  padding:12px 15px;
+  border:1px solid rgba(54,167,237,.78);
+  border-radius:12px;
+  outline:none;
+  background:rgba(4,36,72,.70);
+  color:#fff;
+  font-size:clamp(13px,.95vw,15px);
+  line-height:1.2;
+  transition:border-color .16s,box-shadow .16s,background .16s;
+}
+.auth-card-light input::placeholder{color:#8fc1e8}
+.auth-card-light input:hover{border-color:#56c4ff}
+.auth-card-light input:focus{border-color:#15b3ff;background:rgba(4,42,82,.82);box-shadow:0 0 0 3px rgba(21,179,255,.10)}
+.auth-input-wrap{position:relative;display:flex;align-items:center}
+.auth-input-wrap>span{position:absolute;left:17px;z-index:1;color:#d9f1ff;line-height:1;pointer-events:none}
+.auth-input-wrap .field-icon svg{width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.auth-input-wrap input{padding-left:59px;padding-right:48px}
+.auth-input-wrap button{position:absolute;right:7px;width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:#d9f1ff;cursor:pointer}
+.auth-input-wrap button:hover{background:rgba(255,255,255,.06)}
+.auth-input-wrap button svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+
+.auth-login-options{display:flex;align-items:center;justify-content:space-between;margin-top:-7px;min-height:24px}
+.auth-login-options .auth-remember{display:flex;align-items:center;justify-content:flex-start;gap:9px;margin:0;color:#fff;font-size:clamp(12px,.88vw,13px);font-weight:500;position:relative;cursor:pointer}
+.auth-login-options .auth-remember input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.remember-box{width:23px;height:23px;display:grid;place-items:center;box-sizing:border-box;border:1px solid #18aef7;border-radius:4px;background:#11a9f5;color:#fff;font-size:15px;font-weight:800;line-height:1}
+.auth-login-options .auth-remember input:not(:checked)+.remember-box{background:transparent;color:transparent}
+.auth-forgot-link{justify-self:end;margin-top:-7px;padding:0;border:0;background:transparent;color:#15b7ff;font-size:clamp(12px,.88vw,13px);font-weight:600;cursor:pointer}
+
+.auth-primary-light{min-height:57px;margin-top:-1px;border:0;border-radius:12px;padding:12px 18px;background:linear-gradient(90deg,#0aa7f5,#1677ff);color:#fff;font-size:clamp(15px,1.1vw,17px);font-weight:700;letter-spacing:.1px;cursor:pointer;box-shadow:0 7px 18px rgba(0,127,255,.24);transition:transform .18s,filter .18s,box-shadow .18s}
+.auth-primary-light:hover:not(:disabled){filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 10px 23px rgba(0,127,255,.30)}
+.auth-primary-light:disabled{cursor:wait;opacity:.65}
+
+.auth-or{display:flex;align-items:center;gap:18px;margin:22px 0 14px;color:#d7eaff;font-size:13px;font-weight:500;letter-spacing:.3px}
+.auth-or span{height:1px;flex:1;background:rgba(105,190,237,.65)}
+.auth-socials{display:grid;gap:11px}
+.auth-socials button{width:100%;min-height:50px;border:1px solid rgba(53,155,224,.78);border-radius:11px;background:rgba(3,38,75,.58);color:#fff;display:flex;align-items:center;justify-content:center;gap:12px;font-size:clamp(13px,1vw,15px);font-weight:600;cursor:pointer;transition:background .16s,border-color .16s,transform .16s}
+.auth-socials button:hover{background:rgba(7,57,104,.75);border-color:#57c4ff;transform:translateY(-1px)}
+.social-icon{width:21px;height:21px;flex:0 0 21px;display:inline-flex;align-items:center;justify-content:center}
+.social-icon svg{width:21px;height:21px;display:block}
+.social-icon.github{color:#fff}.social-icon.google{color:#4285f4}
+
+.auth-message-light{margin-top:10px;padding:8px 10px;border:1px solid rgba(53,178,239,.45);border-radius:9px;background:rgba(9,63,105,.45);color:#bce7ff;font-size:11px;line-height:1.35}
+.auth-card-light .switch-auth{width:100%;margin-top:7px;padding:5px;border:0;border-radius:9px;background:transparent;color:#35baff;font-size:12px;font-weight:700;cursor:pointer}
+.auth-card-light .switch-auth:hover{text-decoration:underline}
+.auth-card-light .switch-auth:disabled{opacity:.55;cursor:wait}
+.auth-safe-note{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:20px;padding-bottom:2px;color:#9acdf2;font-size:clamp(9px,.75vw,11px);line-height:1.35;text-align:center}
+.auth-safe-note span{color:#09aaff}
+
+/* Smaller real screens only. Desktop browser zoom does not trigger this until the viewport is genuinely narrow. */
+@media (max-width:900px){
+  .auth-hero-side{width:100%}
+  .auth-hero-side::before{content:"";position:absolute;inset:0;background:rgba(1,16,36,.48);z-index:1}
+  .auth-form-side{overflow:hidden}
+  .auth-create-link{top:18px;right:20px}
+  .auth-card-light{right:20px;width:min(620px,calc(100% - 40px));min-width:0;top:74px;max-height:calc(100vh - 92px);padding:38px 42px 28px}
+  .auth-hero-reference{filter:brightness(.82)}
+}
+@media (max-width:620px){
+  .auth-create-link{font-size:11px}
+  .auth-card-light{right:10px;width:calc(100% - 20px);top:62px;max-height:calc(100vh - 72px);padding:30px 22px 24px;border-radius:18px}
+  .nego-logo{gap:12px}.nego-logo-mark{width:56px;height:56px;flex-basis:56px}.nego-logo strong{font-size:28px}
+  .auth-copy h1{font-size:26px}.auth-copy p{font-size:14px;margin-bottom:25px}
+  .auth-card-light form{gap:18px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .auth-hero-side::after,.auth-card-light{animation:none}
+  .auth-primary-light,.auth-socials button{transition:none}
+}

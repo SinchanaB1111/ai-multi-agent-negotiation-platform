@@ -14,12 +14,21 @@
     "verify:practice": "node scripts/verify-practice.mjs",
     "verify:practice-orchestrator": "node scripts/verify-practice-orchestrator.mjs",
     "verify:negotiation-analysis": "node scripts/verify-negotiation-analysis.mjs",
-    "verify:practice-decisions": "node scripts/verify-practice-human-decisions.mjs"
+    "verify:practice-decisions": "node scripts/verify-practice-human-decisions.mjs",
+    "platform-backend": "python -m uvicorn app.main:app --reload --port 8000 --app-dir platform-backend",
+    "dev:full": "vite",
+    "ai-server": "node server/server.js",
+    "verify:strategic-negotiation": "node scripts/verify-strategic-negotiation.mjs",
+    "verify:report-integrity": "node scripts/verify-report-integrity.mjs",
+    "verify:dashboard-performance": "node scripts/verify-dashboard-performance.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.21.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "nodemailer": "^10.0.13",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

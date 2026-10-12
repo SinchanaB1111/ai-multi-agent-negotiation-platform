@@ -25,3 +25,38 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# Python environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.py[cod]
+
+# SQLite databases and temporary database files
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# Local database workspace files
+*.sqbpro
+
+# Backups and temporary files
+*.bak
+*.backup
+*.old
+*.tmp
+
+# Coverage and test artifacts
+.coverage
+htmlcov/

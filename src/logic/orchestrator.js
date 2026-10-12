@@ -23,6 +23,7 @@ import {
   explainDecision,
   generateCounterOffer,
   generateOpeningOffer,
+  getCounterOfferStrategy,
 } from "./decisionEngine.js";
 
 export { NEGOTIATION_STATUS };
@@ -720,7 +721,8 @@ function saveOffer(
   value,
   reason,
   type,
-  source = "GEMINI"
+  source = "GEMINI",
+  terms = null
 ) {
   let nextState =
     recordOffer(
@@ -730,8 +732,7 @@ function saveOffer(
 
         reason,
 
-        terms:
-          null,
+        terms,
 
         agentId:
           agent.id,
@@ -840,6 +841,15 @@ export async function processPracticeOffer(state, humanOffer, onStep = null) {
     throw new Error("Offer value must be a positive number.");
   }
 
+  const humanOfferCheck = evaluateOfferDetails(human, Math.round(value));
+  if (!humanOfferCheck.withinHardConstraints) {
+    throw new Error(humanOfferCheck.reason);
+  }
+
+  const previousAiOffer = state.currentOffer?.agentId === ai.id
+    ? state.currentOffer
+    : null;
+
   let next = recordOffer(state, {
     value: Math.round(value),
     terms: humanOffer?.terms || null,
@@ -853,15 +863,24 @@ export async function processPracticeOffer(state, humanOffer, onStep = null) {
 
   const opponentOffer = next.currentOffer;
   let response;
-  let source = "RULE_BASED";
+  let source;
 
-  try {
-    response = await generateGeminiAgentResponse(ai, next, next.history, opponentOffer);
-    source = response?.source || response?.provider || "GEMINI";
-  } catch (error) {
-    source = "RULE_BASED";
-    next = activateFallback(next, "Practice Mode LLM request failed; the rule-based negotiation engine handled this turn.");
-    response = runRuleBasedDecision(next, ai, opponentOffer);
+  if (previousAiOffer && value === Number(previousAiOffer.value)) {
+    response = {
+      decision: DECISION.ACCEPT,
+      source: "HUMAN_MATCH",
+      reason: `${human.name} matched the AI's current offer.`,
+    };
+    source = "HUMAN_MATCH";
+  } else {
+    try {
+      response = await generateGeminiAgentResponse(ai, next, next.history, opponentOffer);
+      source = response?.source || response?.provider || "GEMINI";
+    } catch {
+      source = "RULE_BASED";
+      next = activateFallback(next, "Practice Mode LLM request failed; the rule-based negotiation engine handled this turn.");
+      response = runRuleBasedDecision(next, ai, opponentOffer);
+    }
   }
 
   // In Practice Mode the AI's ACCEPT / REJECT / COUNTER decision is authoritative.
@@ -880,12 +899,18 @@ export async function processPracticeOffer(state, humanOffer, onStep = null) {
     return next;
   }
 
-  const previousAiOffer = getPreviousOfferByAgent(next, ai.id);
+  const previousAiCounter = getPreviousOfferByAgent(next, ai.id);
   const counter = getSafeCounterOffer(
     ai,
     value,
-    previousAiOffer,
-    response.counterOffer
+    previousAiCounter,
+    response.counterOffer,
+    {
+      currentRound: next.currentRound,
+      maxRounds: getMaxRounds(next),
+      ownOffers: (next.offers || []).filter((offer) => offer.agentId === ai.id),
+      opponentAgent: human,
+    }
   );
 
   next = saveOffer(
@@ -894,7 +919,8 @@ export async function processPracticeOffer(state, humanOffer, onStep = null) {
     counter,
     response.reason || `${ai.name} made a counteroffer.`,
     "COUNTEROFFER",
-    source
+    source,
+    response.counterTerms || response.terms || null
   );
 
   if (typeof onStep === "function") onStep({ type: "COUNTER", agent: ai, offer: next.currentOffer, response, state: next });
@@ -961,6 +987,13 @@ export function processPracticeDecision(state, decision, reason = "") {
     throw new Error("Human decision must be ACCEPT or REJECT.");
   }
 
+  if (decision === DECISION.ACCEPT) {
+    const acceptanceCheck = evaluateOfferDetails(human, Number(currentOffer.value));
+    if (!acceptanceCheck.withinHardConstraints) {
+      throw new Error(`You cannot accept this offer. ${acceptanceCheck.reason}`);
+    }
+  }
+
   return applyDecision(state, decision, {
     respondingAgent: human,
     source: "HUMAN",
@@ -1017,10 +1050,35 @@ function runRuleBasedDecision(
   // ===================================================
 
   if (!opponentOffer) {
-    const openingAmount =
+    let openingAmount =
       generateOpeningOffer(
         agent
       );
+    const opponent = state.agents?.find((candidate) => candidate.id !== agent.id);
+    const ownMinimum = agent.negotiation?.minimumAcceptable;
+    const ownMaximum = agent.negotiation?.maximumAcceptable;
+    const opponentMinimum = opponent?.negotiation?.minimumAcceptable;
+    const opponentMaximum = opponent?.negotiation?.maximumAcceptable;
+
+    // When a monetary ZOPA exists, an opening anchor may be ambitious, but it
+    // must still be credible: it cannot start outside the feasible agreement
+    // zone. This prevents instant rejection caused by unrealistic opening
+    // positions while preserving a strategic anchor inside the ZOPA.
+    if (
+      agent.decisionType === "minimize" &&
+      typeof ownMaximum === "number" &&
+      typeof opponentMinimum === "number" &&
+      opponentMinimum <= ownMaximum
+    ) {
+      openingAmount = Math.min(ownMaximum, Math.max(opponentMinimum, openingAmount));
+    } else if (
+      agent.decisionType === "maximize" &&
+      typeof ownMinimum === "number" &&
+      typeof opponentMaximum === "number" &&
+      ownMinimum <= opponentMaximum
+    ) {
+      openingAmount = Math.max(ownMinimum, Math.min(opponentMaximum, openingAmount));
+    }
 
     return {
       decision:
@@ -1131,21 +1189,40 @@ function runRuleBasedDecision(
     generateCounterOffer(
       agent,
       opponentOffer.value,
-      previousOwnOffer
+      previousOwnOffer,
+      {
+        currentRound: state.currentRound,
+        maxRounds: getMaxRounds(state),
+        ownOffers: (state.offers || []).filter((offer) => offer.agentId === agent.id),
+        opponentAgent: state.agents?.find((candidate) => candidate.id !== agent.id) || null,
+      }
     );
+
+  const target = Number(agent.negotiation?.targetValue || 0);
+  const boundary = agent.decisionType === "minimize"
+    ? Number(agent.negotiation?.maximumAcceptable || 0)
+    : Number(agent.negotiation?.minimumAcceptable || 0);
+  const movement = Math.abs(counterOffer - previousOwnOffer);
+  const opponentGap = Math.abs(opponentOffer.value - previousOwnOffer);
+  const movementPct = opponentGap > 0 ? Math.round((movement / opponentGap) * 100) : 0;
+  const strategy = getCounterOfferStrategy(agent, {
+    currentRound: state.currentRound,
+    maxRounds: getMaxRounds(state),
+    opponentOffer: opponentOffer.value,
+    previousOwnOffer,
+    ownOffers: (state.offers || []).filter((offer) => offer.agentId === agent.id),
+    opponentAgent: state.agents?.find((candidate) => candidate.id !== agent.id) || null,
+  });
 
   return {
     decision:
       DECISION.COUNTER,
 
     reason:
-      explainDecision(
-        agent,
-        opponentOffer.value,
-        decision
-      ),
+      `${agent.name} countered at ₹${Number(counterOffer).toLocaleString("en-IN")} after evaluating the opponent's ₹${Number(opponentOffer.value).toLocaleString("en-IN")} offer. The move covers about ${movementPct}% of the remaining gap from ₹${Number(previousOwnOffer).toLocaleString("en-IN")}, while protecting the preferred target of ₹${Number(target).toLocaleString("en-IN")} and hard boundary of ₹${Number(boundary).toLocaleString("en-IN")}. Strategy: ${strategy.explanation}`,
 
     counterOffer,
+    counterTerms: strategy.conditionalTrade,
 
     source:
       "RULE_BASED",
@@ -1170,13 +1247,27 @@ function createRequiredConcessionCounter(state, agent, opponentOffer, originalRe
   const counter = generateCounterOffer(
     agent,
     opponentOffer.value,
-    previousOwnOffer?.value ?? null
+    previousOwnOffer?.value ?? null,
+    {
+      currentRound: state.currentRound,
+      maxRounds: getMaxRounds(state),
+      ownOffers: (state.offers || []).filter((offer) => offer.agentId === agent.id),
+      opponentAgent: state.agents?.find((candidate) => candidate.id !== agent.id) || null,
+    }
   );
+  const strategy = getCounterOfferStrategy(agent, {
+    currentRound: state.currentRound,
+    maxRounds: getMaxRounds(state),
+    opponentOffer: opponentOffer.value,
+    previousOwnOffer: previousOwnOffer?.value ?? null,
+    ownOffers: (state.offers || []).filter((offer) => offer.agentId === agent.id),
+  });
 
   return {
     decision: DECISION.COUNTER,
-    reason: `${agent.name} continued negotiating instead of accepting immediately, making a revised offer to reach a mutually acceptable agreement.`,
+    reason: `${agent.name} continued negotiating instead of accepting immediately. The revised offer of ₹${Number(counter).toLocaleString("en-IN")} preserves bargaining room while moving toward the opponent's position. Strategy: ${strategy.explanation}`,
     counterOffer: counter,
+    counterTerms: strategy.conditionalTrade,
     source: originalResponse?.source || "RULE_BASED",
   };
 }
@@ -1269,7 +1360,8 @@ function applyAgentResponse(
         DECISION.MAKE_OFFER
         ? "OFFER"
         : "COUNTEROFFER",
-      response.source
+      response.source,
+      response.counterTerms || response.terms || null
     );
   }
 
@@ -1289,7 +1381,7 @@ export function moveToNextTurn(state, currentAgent) {
   const firstAgentId = state.agents?.[0]?.id;
   const returningToFirst = nextAgentId === firstAgentId;
   const nextRound = returningToFirst
-    ? Math.min((state.currentRound || 1) + 1, getMaxRounds(state))
+    ? (state.currentRound || 1) + 1
     : state.currentRound;
 
   return syncTurn({
@@ -1440,12 +1532,12 @@ export async function runAutomaticNegotiation(
   // UI NOTIFICATION
   // ===================================================
 
-  function notify(event) {
+  async function notify(event) {
     if (
       typeof onStep ===
       "function"
     ) {
-      onStep({
+      await onStep({
         ...event,
 
         geminiCallCount:
@@ -1488,7 +1580,7 @@ export async function runAutomaticNegotiation(
       `🤖 LLM call ${state.geminiCallsUsed}/${maxGeminiCalls} (Gemini → Groq → OpenAI)`
     );
 
-    notify({
+    await notify({
       type: "LLM_CALL_STARTED",
       agent,
       offer: opponentOffer,
@@ -1511,6 +1603,11 @@ export async function runAutomaticNegotiation(
     state.status ===
       NEGOTIATION_STATUS.IN_PROGRESS
   ) {
+
+        // Visible pacing for Simulation Mode. Tests can set stepDelayMs=0 without
+    // changing production behavior.
+    const stepDelayMs = Number.isFinite(Number(options.stepDelayMs)) ? Math.max(0, Number(options.stepDelayMs)) : 1200;
+    if (stepDelayMs > 0) await new Promise((resolve) => setTimeout(resolve, stepDelayMs));
     // =================================================
     // MAX ROUND CHECK
     // =================================================
@@ -1552,7 +1649,7 @@ export async function runAutomaticNegotiation(
           }
         );
 
-      notify({
+      await notify({
         type:
           "MAX_ROUNDS",
 
@@ -1655,7 +1752,7 @@ export async function runAutomaticNegotiation(
           fallbackReason
         );
 
-        notify({
+        await notify({
           type:
             "GEMINI_FALLBACK",
 
@@ -1717,7 +1814,7 @@ export async function runAutomaticNegotiation(
       response.decision ===
       DECISION.ACCEPT
     ) {
-      notify({
+      await notify({
         type:
           "ACCEPT",
 
@@ -1741,7 +1838,7 @@ export async function runAutomaticNegotiation(
       response.decision ===
       DECISION.REJECT
     ) {
-      notify({
+      await notify({
         type:
           "REJECT",
 
@@ -1767,7 +1864,7 @@ export async function runAutomaticNegotiation(
       response.decision ===
         DECISION.COUNTER
     ) {
-      notify({
+      await notify({
         type:
           response.decision ===
           DECISION.MAKE_OFFER
@@ -1824,7 +1921,7 @@ export async function runAutomaticNegotiation(
           }
         );
 
-      notify({
+      await notify({
         type:
           "DEADLOCK",
 
@@ -1890,7 +1987,7 @@ export async function runAutomaticNegotiation(
         }
       );
 
-    notify({
+    await notify({
       type:
         "COMPLETED",
 

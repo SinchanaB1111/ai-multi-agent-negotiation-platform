@@ -7,7 +7,7 @@ import {
 } from "../src/logic/negotiationState.js";
 import { runAutomaticNegotiation } from "../src/logic/orchestrator.js";
 
-assert.equal(scenarios.length, 3, "Exactly 3 demo scenarios are required.");
+assert.ok(scenarios.length >= 8, "The scenario library should contain at least 8 built-in scenarios.");
 
 for (const scenario of scenarios) {
   assert.equal(scenario.agents.length, 2, `${scenario.name} must have exactly 2 agents.`);
@@ -24,7 +24,7 @@ for (const scenario of scenarios) {
       usingFallback: true,
     },
     null,
-    { maxGeminiCalls: 10 }
+    { maxGeminiCalls: 10, stepDelayMs: 0 }
   );
 
   assert.ok(
@@ -40,4 +40,4 @@ for (const scenario of scenarios) {
   );
 }
 
-console.log("✅ All 3 negotiation scenarios passed end-to-end fallback verification.");
+console.log(`✅ All ${scenarios.length} negotiation scenarios passed end-to-end fallback verification.`);

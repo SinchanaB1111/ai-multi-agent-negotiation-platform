@@ -18,7 +18,7 @@ function ScenarioSelection({ scenarios, mode, onModeChange, onSelect }) {
         </button>
       </div>
 
-      <div className="scenario-section-header"><div className="scenario-header-center"><div className="scenario-title-row"><h2>Choose a scenario</h2><div className="scenario-count"><span>{scenarios.length}</span> Templates</div></div><p>All three templates are ready for an end-to-end demonstration.</p></div></div>
+      <div className="scenario-section-header"><div className="scenario-header-center"><div className="scenario-title-row"><h2>Choose a scenario</h2><div className="scenario-count"><span>{scenarios.length}</span> Templates</div></div><p>Choose from the platform library or configure a custom negotiation.</p></div></div>
       <div className="scenario-row">{scenarios.map((scenario, index) => <div className="scenario-wrapper" key={scenario.id}><ScenarioCard scenario={scenario} index={index} onSelect={onSelect} /></div>)}</div>
 
       <div className="feature-strip">

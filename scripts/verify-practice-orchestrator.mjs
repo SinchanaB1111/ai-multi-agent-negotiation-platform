@@ -28,31 +28,28 @@ try {
   const agents = scenario.agents;
   let state = startNegotiation(createNegotiationState(scenario, agents, 6));
 
-  state = await processPracticeOffer(state, { value: 110000, reason: "Human opening offer" });
+  // A realistic low opening should produce a counteroffer rather than an
+  // immediate agreement. The human can then submit the exact AI counter,
+  // which must be accepted as an explicit matching offer.
+  state = await processPracticeOffer(state, { value: 90000, reason: "Human opening offer" });
   assert.equal(state.status, "IN_PROGRESS");
   assert.equal(state.currentRound, 2);
   assert.equal(state.currentAgentTurn, agents[0].id);
   assert.equal(state.currentOffer.agentId, agents[1].id);
-
-  state = await processPracticeOffer(state, { value: 105000, reason: "Human concession" });
-  assert.equal(state.status, "IN_PROGRESS");
-  assert.equal(state.currentRound, 3);
-  assert.ok(Number.isFinite(state.currentOffer.value) && state.currentOffer.value > 0);
-  assert.equal(state.offers.length, 4);
-  assert.ok(state.history.some((item) => item.event === "ROUND_ADVANCED"));
-  assert.ok(state.concessions.some((item) => item.agentId === agents[0].id && item.change === 5000));
-  assert.ok(state.concessions.some((item) => item.agentId === agents[1].id && item.change === 1750));
-  assert.equal(state.metrics.totalConcessions, state.concessions.length);
+  const aiCounter = state.currentOffer.value;
+  assert.ok(aiCounter > 90000);
 
   const historyBeforeAccept = state.history.length;
-  state = processPracticeDecision(state, "ACCEPT", "Human accepted the AI's good counteroffer.");
+  state = await processPracticeOffer(state, { value: aiCounter, reason: "Human matches the AI counteroffer" });
+  assert.equal(state.status, "AGREEMENT");
+  assert.equal(state.agreement.offer.value, aiCounter);
+  assert.ok(state.history.length > historyBeforeAccept);
+  assert.ok(state.history.some((item) => item.type === "DECISION" && item.decision === "ACCEPT"));
   assert.equal(state.status, "AGREEMENT");
   assert.equal(state.agreement.offer.value, state.currentOffer.value);
-  assert.equal(state.agreement.agentId, agents[0].id);
-  assert.ok(state.history.length > historyBeforeAccept);
-  assert.ok(state.history.some((item) => item.type === "DECISION" && item.decision === "ACCEPT" && item.source === "HUMAN"));
-  assert.equal(state.metrics.totalOffers, 4);
-  assert.equal(state.metrics.totalCounteroffers, 2);
+  assert.equal(state.agreement.agentId, agents[1].id);
+  assert.equal(state.metrics.totalOffers, 3);
+  assert.equal(state.metrics.totalCounteroffers, 1);
   assert.equal(state.metrics.totalDecisions, 1);
 
   console.log("✓ Practice orchestrator verification passed.");

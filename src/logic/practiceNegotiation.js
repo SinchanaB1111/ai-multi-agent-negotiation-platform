@@ -1,11 +1,12 @@
 import { generateCounterOffer } from "./decisionEngine.js";
 
-export function getSafeCounterOffer(agent, opponentValue, previousOwnOffer, llmValue) {
+export function getSafeCounterOffer(agent, opponentValue, previousOwnOffer, llmValue, context = {}) {
 
   const deterministic = generateCounterOffer(
     agent,
     opponentValue,
-    previousOwnOffer?.value ?? null
+    previousOwnOffer?.value ?? null,
+    context
   );
 
   const candidate = Number(llmValue);
@@ -14,6 +15,21 @@ export function getSafeCounterOffer(agent, opponentValue, previousOwnOffer, llmV
   const target = agent.negotiation?.targetValue;
 
   let safe = Number.isFinite(candidate) && candidate > 0 ? candidate : deterministic;
+
+  // The LLM can suggest strategy, but it cannot escape the feasible joint
+  // bargaining zone when one exists. This keeps Practice Mode realistic and
+  // prevents an otherwise valid-looking LLM counter from being immediately
+  // rejected by the other party's hard boundary.
+  const opponentAgent = context?.opponentAgent;
+  if (opponentAgent?.negotiation) {
+    if (agent.decisionType === "minimize") {
+      const lower = Number(opponentAgent.negotiation.minimumAcceptable);
+      if (Number.isFinite(lower) && Number.isFinite(maximum) && lower <= maximum) safe = Math.max(lower, Math.min(maximum, safe));
+    } else {
+      const upper = Number(opponentAgent.negotiation.maximumAcceptable);
+      if (Number.isFinite(upper) && Number.isFinite(minimum) && minimum <= upper) safe = Math.min(upper, Math.max(minimum, safe));
+    }
+  }
 
   if (agent.decisionType === "minimize") {
     if (typeof maximum === "number") safe = Math.min(safe, maximum);

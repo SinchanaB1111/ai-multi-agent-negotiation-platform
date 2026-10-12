@@ -1,5 +1,5 @@
 // src/logic/geminiAgent.js
-
+const API_BASE_URL = "http://localhost:3001/api";
 import { createAgentInput } from "./agentInput.js";
 
 /**
@@ -44,11 +44,9 @@ export async function generateGeminiAgentResponse(
   // ------------------------------------
 
   const backendUrl =
-    (import.meta.env?.VITE_API_BASE_URL || "http://localhost:3001").replace(/\/$/, "");
+    (import.meta.env?.VITE_NEGOTIATION_API_BASE_URL || "http://127.0.0.1:3001").replace(/\/$/, "");
 
-  const response = await fetch(
-    `${backendUrl}/api/negotiation/agent-response`,
-    {
+  const response = await fetch(`${API_BASE_URL}/negotiation/agent-response`, {
       method: "POST",
 
       headers: {

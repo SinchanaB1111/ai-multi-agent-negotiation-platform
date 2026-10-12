@@ -24,7 +24,9 @@ function directionFor(agent, change) {
 
 export function buildNegotiationAnalysis(state) {
   const agents = state.agents || [];
-  const finalValue = num(state.agreement?.offer?.value ?? state.currentOffer?.value);
+  const finalValue = state.status === "AGREEMENT"
+    ? num(state.agreement?.offer?.value)
+    : null;
   const offers = state.offers || [];
   const concessions = state.concessions || [];
 
