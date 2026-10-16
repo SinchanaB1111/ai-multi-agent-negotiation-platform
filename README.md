@@ -203,7 +203,7 @@ NegoSphere combines web development, AI integration, agent configuration, and ne
 
 **Project:** NegoSphere — AI-Driven Multi-Agent Negotiation Training & Simulation Platform
 
-**GitHub Repository:** [yaswanth495/ai-driven-multi-agent-negotiation-platform](https://github.com/yaswanth495/ai-driven-multi-agent-negotiation-platform)
+**GitHub Repository:** https://github.com/SinchanaB1111/ai-multi-agent-negotiation-platform?tab=readme-ov-file
 
 **Built to explore smarter negotiation through AI, interactive simulations, and data-driven insights.**
 
